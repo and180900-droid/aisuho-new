@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI SUHO</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #080808;
+    --near-black: #0f0f0f;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: rgba(255,255,255,0.10);
+    --border-light: rgba(255,255,255,0.18);
+    --gold: #d4a853;
+    --gold-light: #e8c97c;
+    --text: #f5f2ec;
+    --text2: #c8c4bc;
+    --muted: #a09a90;
+    --muted2: #666;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 60px;
+    background: rgba(8,8,8,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 400;
+    letter-spacing: 0.08em; color: var(--gold);
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--text2);
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 400; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-cta {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); border: 1px solid var(--gold);
+    padding: 8px 20px; text-decoration: none; transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--black); }
+  .admin-toggle-btn {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 16px; cursor: pointer; background: transparent;
+    font-family: 'DM Sans', sans-serif; transition: all 0.3s; display: flex; align-items: center; gap: 6px;
+  }
+  .admin-toggle-btn:hover { color: var(--text2); border-color: rgba(255,255,255,0.25); }
+  .admin-toggle-btn .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted2); transition: background 0.3s;
+  }
+  .admin-toggle-btn.active .dot { background: var(--gold); }
+  .admin-toggle-btn.active { color: var(--gold); border-color: var(--gold); }
+
+  /* ─── ADMIN PANEL ─── */
+  .admin-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  }
+  .admin-overlay.open { display: flex; align-items: flex-start; justify-content: flex-end; }
+  .admin-panel {
+    width: 480px; height: 100vh;
+    background: #0d0d0d;
+    border-left: 1px solid var(--border-light);
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    padding: 0;
+  }
+  .admin-overlay.open .admin-panel { transform: translateX(0); }
+  .admin-header {
+    padding: 28px 32px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; background: #0d0d0d; z-index: 1;
+  }
+  .admin-header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; color: var(--gold); letter-spacing: 0.05em;
+  }
+  .admin-close {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 20px; line-height: 1; transition: color 0.3s; padding: 4px;
+  }
+  .admin-close:hover { color: var(--text); }
+  .admin-tabs {
+    display: flex; border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+  }
+  .admin-tab {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); padding: 14px 0; margin-right: 28px;
+    cursor: pointer; background: none; border: none;
+    border-bottom: 2px solid transparent; transition: all 0.3s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .admin-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .admin-body { padding: 32px; }
+  .admin-section { margin-bottom: 36px; }
+  .admin-section-title {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px; font-weight: 500;
+  }
+  .admin-field { margin-bottom: 16px; }
+  .admin-label {
+    display: block; font-size: 12px; color: var(--muted);
+    margin-bottom: 6px; letter-spacing: 0.05em;
+  }
+  .admin-input, .admin-textarea {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border); color: var(--text);
+    padding: 10px 14px; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; outline: none; transition: border-color 0.3s;
+    resize: vertical;
+  }
+  .admin-input:focus, .admin-textarea:focus { border-color: var(--gold); }
+  .admin-textarea { min-height: 80px; }
+  .admin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .admin-save-btn {
+    background: var(--gold); color: var(--black);
+    border: none; padding: 12px 28px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500;
+    cursor: pointer; transition: background 0.3s; width: 100%;
+    margin-top: 8px;
+  }
+  .admin-save-btn:hover { background: var(--gold-light); }
+  .admin-save-msg {
+    display: none; text-align: center; font-size: 12px;
+    color: var(--gold); letter-spacing: 0.1em; margin-top: 10px;
+  }
+
+  /* Upload Area */
+  .upload-zone {
+    border: 1px dashed var(--border-light);
+    background: var(--surface);
+    padding: 32px; text-align: center;
+    cursor: pointer; transition: all 0.3s; position: relative;
+    margin-bottom: 16px;
+  }
+  .upload-zone:hover { border-color: var(--gold); background: rgba(212,168,83,0.04); }
+  .upload-zone.dragover { border-color: var(--gold); background: rgba(212,168,83,0.08); }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 28px; margin-bottom: 10px; color: var(--muted); }
+  .upload-text { font-size: 13px; color: var(--text2); }
+  .upload-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .upload-preview {
+    display: none; position: relative;
+    margin-bottom: 16px;
+  }
+  .upload-preview img {
+    width: 100%; object-fit: cover; border: 1px solid var(--border-light);
+    display: block;
+  }
+  .upload-preview-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.7); padding: 8px 12px;
+    font-size: 11px; color: var(--text2); letter-spacing: 0.05em;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .upload-remove {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 14px; padding: 0; transition: color 0.3s;
+  }
+  .upload-remove:hover { color: #e06c75; }
+
+  /* Portfolio Upload Grid */
+  .portfolio-upload-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 16px;
+  }
+  .portfolio-upload-item {
+    aspect-ratio: 1; border: 1px dashed var(--border-light);
+    background: var(--surface); position: relative;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.3s; overflow: hidden;
+    font-size: 11px; color: var(--muted); text-align: center;
+    flex-direction: column; gap: 6px;
+  }
+  .portfolio-upload-item:hover { border-color: var(--gold); }
+  .portfolio-upload-item input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .portfolio-upload-item img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  .portfolio-upload-item .pf-remove {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,0.7); border: none; color: white;
+    width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
+    font-size: 11px; z-index: 2; display: none;
+    align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .portfolio-upload-item:hover .pf-remove { display: flex; }
+  .portfolio-upload-item .pf-remove:hover { background: #e06c75; }
+  .pf-add-icon { font-size: 20px; color: var(--muted); }
+  .pf-slot-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted2); }
+
+  /* Curriculum card editor */
+  .curr-editor-item {
+    border: 1px solid var(--border);
+    margin-bottom: 12px; background: var(--surface);
+  }
+  .curr-editor-header {
+    padding: 12px 16px; display: flex; justify-content: space-between;
+    align-items: center; cursor: pointer; user-select: none;
+  }
+  .curr-editor-header-title {
+    font-size: 13px; font-weight: 500; color: var(--text2);
+  }
+  .curr-editor-toggle { color: var(--muted); font-size: 12px; }
+  .curr-editor-body { padding: 16px; border-top: 1px solid var(--border); display: none; }
+  .curr-editor-item.expanded .curr-editor-body { display: block; }
+  .curr-editor-item.expanded .curr-editor-toggle { transform: rotate(180deg); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 60px 80px; position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 70% 40%, rgba(212,168,83,0.07) 0%, transparent 70%);
+  }
+  .hero-line {
+    width: 1px; height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--gold));
+    margin-bottom: 40px; animation: fadeIn 1s ease 0.3s both;
+  }
+  .hero-label {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 24px; font-weight: 500;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    line-height: 1.28;
+    margin-bottom: 12px; color: var(--text);
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+  .hero-title em {
+    font-style: normal; color: var(--gold);
+    display: block;
+    font-size: clamp(52px, 6vw, 88px);
+    letter-spacing: -0.01em;
+    margin-left: 0;
+  }
+  .hero-title .sub {
+    font-size: clamp(32px, 4.2vw, 66px); color: var(--text);
+    display: block; font-style: normal;
+    font-weight: 400; letter-spacing: -1px;
+    margin-left: 5px;
+  }
+  .hero-title .sub { word-break: keep-all; }
+  @media (max-width: 600px) {
+    .hero-title .sub { word-break: keep-all; overflow-wrap: break-word; }
+  }
+  .hero-desc {
+    max-width: 480px; color: var(--text2); font-size: 16px;
+    line-height: 1.85; margin: 32px 0 48px;
+    animation: fadeUp 0.8s ease 0.7s both;
+  }
+  .hero-actions {
+    display: flex; gap: 16px; align-items: center;
+    animation: fadeUp 0.8s ease 0.9s both;
+  }
+  .btn-primary {
+    background: var(--gold); color: var(--black);
+    padding: 14px 36px; font-size: 12px; letter-spacing: 0.15em;
+    text-transform: uppercase; font-weight: 500; text-decoration: none;
+    font-family: 'DM Sans', sans-serif; transition: all 0.3s;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-ghost {
+    color: var(--text2); font-size: 13px; letter-spacing: 0.08em;
+    text-decoration: none; display: flex; align-items: center;
+    gap: 8px; transition: color 0.3s;
+  }
+  .btn-ghost:hover { color: var(--text); }
+  .btn-ghost::after { content: '→'; font-size: 14px; }
+  .hero-stats {
+    display: flex; gap: 60px; margin-top: 80px;
+    padding-top: 40px; border-top: 1px solid var(--border);
+    animation: fadeUp 0.8s ease 1.1s both;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif; font-size: 36px;
+    font-weight: 400; color: var(--gold); line-height: 1;
+  }
+  .stat-label { font-size: 12px; letter-spacing: 0.1em; color: var(--text2); margin-top: 6px; }
+  .hero-deco {
+    position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+    width: 400px; height: 400px;
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 50%;
+    animation: fadeIn 1.5s ease 0.5s both;
+  }
+  .hero-deco::after {
+    content: ''; position: absolute; inset: 30px;
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 50%;
+  }
+
+  section { padding: 100px 60px; }
+  .section-label {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px; font-weight: 500;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3.5vw, 52px);
+    font-weight: 400; line-height: 1.15; margin-bottom: 16px; color: var(--text);
+  }
+  .divider { width: 40px; height: 1px; background: var(--gold); margin: 24px 0; }
+
+  #about { background: var(--near-black); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; margin-top: 60px; align-items: start;
+  }
+  .about-photo-frame {
+    aspect-ratio: 3/4; background: var(--surface);
+    border: 1px solid var(--border-light); position: relative;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+  }
+  .about-photo-frame img {
+    width: 100%; height: 100%; object-fit: cover;
+    position: absolute; inset: 0;
+  }
+  .photo-placeholder {
+    font-family: 'Cormorant Garamond', serif; font-size: 80px;
+    font-weight: 300; color: rgba(255,255,255,0.15);
+  }
+  .about-photo-frame::before {
+    content: ''; position: absolute; inset: 16px;
+    border: 1px solid rgba(212,168,83,0.15); pointer-events: none; z-index: 1;
+  }
+  .about-content { padding-top: 20px; }
+  .about-name {
+    font-family: 'Cormorant Garamond', serif; font-size: 42px;
+    font-weight: 400; letter-spacing: 0.02em; line-height: 1.1;
+    margin-bottom: 6px; color: var(--text);
+  }
+  .about-title-tag {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 28px; font-weight: 500;
+  }
+  .about-text { color: var(--text2); font-size: 15px; line-height: 1.9; margin-bottom: 20px; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+  .tag { padding: 7px 14px; border: 1px solid var(--border-light); font-size: 12px; letter-spacing: 0.06em; color: var(--text2); }
+
+  #curriculum { background: var(--black); }
+  .curriculum-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border); margin-top: 60px; border: 1px solid var(--border);
+  }
+  .curriculum-card { background: var(--black); padding: 40px 32px; transition: background 0.3s; }
+  .curriculum-card:hover { background: var(--surface); }
+  .curr-num {
+    font-family: 'Cormorant Garamond', serif; font-size: 52px;
+    font-weight: 300; color: rgba(255,255,255,0.12); line-height: 1; margin-bottom: 24px;
+  }
+  .curr-title { font-size: 17px; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 12px; color: var(--text); }
+  .curr-desc { font-size: 14px; color: var(--text2); line-height: 1.75; margin-bottom: 20px; }
+  .curr-duration { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+
+  #reviews { background: var(--near-black); }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .review-card {
+    border: 1px solid var(--border-light); padding: 36px 28px;
+    background: var(--surface); position: relative;
+  }
+  .review-card::before {
+    content: '"'; font-family: 'Cormorant Garamond', serif; font-size: 80px;
+    color: var(--gold); opacity: 0.25; position: absolute; top: 12px; left: 24px; line-height: 1;
+  }
+  .review-text { font-size: 14px; color: var(--text2); line-height: 1.85; margin-bottom: 28px; margin-top: 24px; }
+  .reviewer { display: flex; align-items: center; gap: 12px; }
+  .reviewer-avatar {
+    width: 36px; height: 36px; background: var(--surface2);
+    border: 1px solid var(--border-light); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; color: var(--gold);
+  }
+  .reviewer-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .reviewer-company { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .stars { color: var(--gold); font-size: 13px; margin-bottom: 8px; }
+
+  #portfolio { background: var(--black); }
+  .portfolio-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; }
+  .portfolio-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .portfolio-item {
+    aspect-ratio: 1; background: var(--surface); border: 1px solid var(--border-light);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: border-color 0.3s;
+  }
+  .portfolio-item:first-child { grid-column: span 2; grid-row: span 2; }
+  .portfolio-item:hover { border-color: var(--gold); }
+  .portfolio-item img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  .portfolio-icon { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--muted); font-weight: 400; }
+  .portfolio-label {
+    position: absolute; bottom: 14px; left: 14px;
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); opacity: 0; transition: opacity 0.3s; z-index: 2;
+  }
+  .portfolio-item:hover .portfolio-label { opacity: 1; }
+  .sns-row { display: flex; gap: 12px; margin-top: 40px; }
+  .sns-btn {
+    display: flex; align-items: center; gap: 8px; padding: 10px 22px;
+    border: 1px solid var(--border-light); font-size: 12px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text2);
+    text-decoration: none; transition: all 0.3s;
+  }
+  .sns-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  #contact {
+    background: var(--surface); text-align: center;
+    padding: 120px 60px; position: relative; overflow: hidden;
+  }
+  #contact::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 80% at 50% 100%, rgba(212,168,83,0.06) 0%, transparent 60%);
+  }
+  .contact-title {
+    font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4vw, 64px);
+    font-weight: 400; margin-bottom: 16px; position: relative; color: var(--text);
+  }
+  .contact-sub { color: var(--text2); max-width: 440px; margin: 0 auto 48px; font-size: 15px; position: relative; word-break: keep-all; }
+  @media (max-width: 480px) { .contact-sub { font-size: 13px; } }
+  .contact-form { display: flex; max-width: 480px; margin: 0 auto 20px; position: relative; }
+  .contact-input {
+    flex: 1; background: var(--black); border: 1px solid var(--border-light);
+    border-right: none; padding: 14px 20px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+  }
+  .contact-input::placeholder { color: var(--muted); }
+  .contact-input:focus { border-color: var(--gold); }
+  .contact-submit {
+    background: var(--gold); border: 1px solid var(--gold); color: var(--black);
+    padding: 14px 28px; font-family: 'DM Sans', sans-serif;
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 500; cursor: pointer; transition: background 0.3s;
+  }
+  .contact-submit:hover { background: var(--gold-light); }
+  /* Contact form fields */
+  .contact-fields {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; max-width: 560px; margin: 0 auto 16px; position: relative;
+  }
+  .contact-fields .full { grid-column: 1 / -1; }
+  .contact-field-input {
+    width: 100%; background: var(--black);
+    border: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+    padding: 14px 20px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+    transition: border-color 0.3s;
+  }
+  .contact-field-input::placeholder { color: var(--muted); }
+  .contact-field-input:focus { border-color: var(--gold); }
+  .contact-submit-wrap { max-width: 560px; margin: 0 auto; position: relative; }
+  .contact-submit-full {
+    width: 100%; background: var(--gold); border: 1px solid var(--gold);
+    color: var(--black); padding: 16px 28px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500; cursor: pointer; transition: background 0.3s;
+  }
+  .contact-submit-full:hover { background: var(--gold-light); }
+  .contact-sent-msg {
+    display: none; margin-top: 16px; font-size: 13px;
+    color: var(--gold); letter-spacing: 0.08em; position: relative;
+  }
+
+  footer {
+    background: var(--black); padding: 40px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--gold); font-weight: 300; }
+  .footer-copy { font-size: 12px; color: var(--muted); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .admin-toggle-btn span.btn-text { display: none; }
+    section { padding: 70px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-deco { display: none; }
+    .about-grid, .curriculum-grid, .reviews-grid { grid-template-columns: 1fr; }
+    .curriculum-grid { gap: 0; }
+    .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+    .portfolio-item:first-child { grid-column: span 2; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    .admin-panel { width: 100vw; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="text-decoration:none;"><div class="logo" id="nav-logo">AI SUHO</div></a>
+  <ul class="nav-links">
+    <li><a href="#about">소개</a></li>
+    <li><a href="#curriculum">커리큘럼</a></li>
+    <li><a href="#reviews">수강 후기</a></li>
+    <li><a href="#portfolio">포트폴리오</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="admin-toggle-btn" id="adminToggleBtn" onclick="promptAdminPassword()">
+      <span class="dot"></span><span class="btn-text">관리자</span>
+    </button>
+    <a class="nav-cta" href="#contact">강의 문의</a>
+  </div>
+</nav>
+
+<!-- ─── ADMIN OVERLAY ─── -->
+<div class="admin-overlay" id="adminOverlay" onclick="handleOverlayClick(event)">
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <div class="admin-header-title">페이지 관리자</div>
+      <button class="admin-close" onclick="toggleAdmin()">✕</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab(this,'tab-basic')">기본 정보</button>
+      <button class="admin-tab" onclick="switchTab(this,'tab-curriculum')">커리큘럼</button>
+      <button class="admin-tab" onclick="switchTab(this,'tab-reviews')">후기</button>
+      <button class="admin-tab" onclick="switchTab(this,'tab-sns')">SNS</button>
+      <button class="admin-tab" onclick="switchTab(this,'tab-images')">이미지</button>
+    </div>
+
+    <!-- TAB: 기본 정보 -->
+    <div class="admin-body" id="tab-basic">
+      <div class="admin-section">
+        <div class="admin-section-title">강사 정보</div>
+        <div class="admin-field">
+          <label class="admin-label">강사명</label>
+          <input class="admin-input" id="f-name" type="text" value="수호">
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">직함 태그</label>
+          <input class="admin-input" id="f-title-tag" type="text" value="AI 교육 전문가">
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">소개글 1</label>
+          <textarea class="admin-textarea" id="f-bio1">삼성, LG, 현대 등 국내 주요 대기업과 공공기관에 AI 실무 교육을 제공해 온 전문 강사입니다. 복잡한 AI 개념을 현업에서 바로 활용 가능한 방식으로 전달하는 것을 목표로 합니다.</textarea>
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">소개글 2</label>
+          <textarea class="admin-textarea" id="f-bio2">단순한 이론 교육을 넘어, 실제 업무 환경에 적용 가능한 맞춤형 커리큘럼을 통해 조직의 AI 역량을 강화합니다.</textarea>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title">히어로 통계</div>
+        <div class="admin-row">
+          <div class="admin-field">
+            <label class="admin-label">기업 강의 수</label>
+            <input class="admin-input" id="f-stat1" type="text" value="200+">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">누적 수강생</label>
+            <input class="admin-input" id="f-stat2" type="text" value="8,000+">
+          </div>
+        </div>
+        <div class="admin-row">
+          <div class="admin-field">
+            <label class="admin-label">만족도</label>
+            <input class="admin-input" id="f-stat3" type="text" value="98%">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">AI 강의 경력</label>
+            <input class="admin-input" id="f-stat4" type="text" value="7년">
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title">연락처</div>
+        <div class="admin-field">
+          <label class="admin-label">이메일</label>
+          <input class="admin-input" id="f-email" type="text" value="contact@aijunho.com">
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">히어로 설명문</label>
+          <textarea class="admin-textarea" id="f-hero-desc">국내 주요 기업 대상 AI 실무 교육 전문가.
+ChatGPT, 생성형 AI, LLM 응용까지
+현장 밀착형 커리큘럼을 제공합니다.</textarea>
+        </div>
+      </div>
+
+      <button class="admin-save-btn" onclick="saveBasic()">변경사항 저장</button>
+      <div class="admin-save-msg" id="save-msg-basic">✓ 저장되었습니다</div>
+    </div>
+
+    <!-- TAB: 커리큘럼 -->
+    <div class="admin-body" id="tab-curriculum" style="display:none;">
+      <div class="admin-section">
+        <div class="admin-section-title">강의 프로그램 편집</div>
+        <div id="curr-editor-list"></div>
+      </div>
+      <button class="admin-save-btn" onclick="saveCurriculum()">커리큘럼 저장</button>
+      <div class="admin-save-msg" id="save-msg-curr">✓ 저장되었습니다</div>
+    </div>
+
+
+    <!-- TAB: 수강 후기 -->
+    <div class="admin-body" id="tab-reviews" style="display:none;">
+      <div class="admin-section">
+        <div class="admin-section-title">수강 후기 편집</div>
+        <div id="reviews-editor-list"></div>
+      </div>
+      <button class="admin-save-btn" onclick="saveReviews()">후기 저장</button>
+      <div class="admin-save-msg" id="save-msg-reviews">✓ 저장되었습니다</div>
+    </div>
+
+    <!-- TAB: SNS 링크 -->
+    <div class="admin-body" id="tab-sns" style="display:none;">
+      <div class="admin-section">
+        <div class="admin-section-title">SNS 링크 설정</div>
+        <div class="admin-field">
+          <label class="admin-label">YouTube URL</label>
+          <input class="admin-input" id="f-sns-youtube" type="url" placeholder="https://youtube.com/@channel">
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Instagram URL</label>
+          <input class="admin-input" id="f-sns-instagram" type="url" placeholder="https://instagram.com/username">
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Blog URL</label>
+          <input class="admin-input" id="f-sns-blog" type="url" placeholder="https://blog.naver.com/username">
+        </div>
+      </div>
+      <button class="admin-save-btn" onclick="saveSns()">SNS 링크 저장</button>
+      <div class="admin-save-msg" id="save-msg-sns">✓ 저장되었습니다</div>
+    </div>
+
+    <!-- TAB: 이미지 -->
+    <div class="admin-body" id="tab-images" style="display:none;">
+      <div class="admin-section">
+        <div class="admin-section-title">프로필 사진</div>
+        <div class="upload-preview" id="profile-preview">
+          <img id="profile-preview-img" src="" alt="">
+          <div class="upload-preview-label">
+            <span id="profile-preview-name">profile.jpg</span>
+            <button class="upload-remove" onclick="removeImage('profile')">✕</button>
+          </div>
+        </div>
+        <div class="upload-zone" id="profile-upload-zone">
+          <input type="file" accept="image/*" onchange="handleImageUpload(event,'profile')">
+          <div class="upload-icon">↑</div>
+          <div class="upload-text">클릭하거나 사진을 드래그하세요</div>
+          <div class="upload-sub">JPG, PNG, WEBP · 최대 10MB</div>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title">포트폴리오 이미지</div>
+        <div class="upload-sub" style="margin-bottom:12px; color:var(--muted)">슬롯을 클릭해 이미지를 업로드하세요 (최대 5장)</div>
+        <div class="portfolio-upload-grid" id="portfolio-upload-grid"></div>
+      </div>
+
+      <div class="admin-save-msg" id="save-msg-images" style="display:block; text-align:left; margin-top:0;">이미지는 업로드 즉시 반영됩니다</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PASSWORD MODAL ─── -->
+<div id="pwModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#0d0d0d;border:1px solid var(--border-light);padding:44px 40px;width:340px;position:relative;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);margin-bottom:6px;letter-spacing:0.05em;">관리자 모드</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:24px;letter-spacing:0.04em;">비밀번호를 입력하세요</div>
+    <input id="pw-input" type="password" class="admin-input" placeholder="비밀번호" style="margin-bottom:10px;" onkeydown="if(event.key==='Enter')checkAdminPassword()">
+    <div id="pw-error" style="display:none;font-size:12px;color:#e06c75;margin-bottom:10px;letter-spacing:0.04em;">비밀번호가 올바르지 않습니다.</div>
+    <button class="admin-save-btn" onclick="checkAdminPassword()" style="margin-top:4px;">확인</button>
+    <button onclick="closePwModal()" style="position:absolute;top:16px;right:18px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">✕</button>
+  </div>
+</div>
+
+<!-- ─── PAGE CONTENT ─── -->
+
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-deco"></div>
+  <div class="hero-line"></div>
+  <p class="hero-label">AI Instructor &amp; Consultant</p>
+  <h1 class="hero-title">
+    <em>인공지능으로</em>
+    <span class="sub">비즈니스의<wbr> 새로운 가능성을 설계하다</span>
+  </h1>
+  <p class="hero-desc" id="pg-hero-desc">국내 주요 기업 대상 AI 실무 교육 전문가.<br>
+  ChatGPT, 생성형 AI, LLM 응용까지<br>현장 밀착형 커리큘럼을 제공합니다.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="#curriculum">커리큘럼 보기</a>
+    <a class="btn-ghost" href="#contact">강의 문의하기</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-num" id="pg-stat1">200+</div>
+      <div class="stat-label">강의 완료</div>
+    </div>
+    <div>
+      <div class="stat-num" id="pg-stat2">8,000+</div>
+      <div class="stat-label">누적 수강생</div>
+    </div>
+    <div>
+      <div class="stat-num" id="pg-stat3">98%</div>
+      <div class="stat-label">만족도</div>
+    </div>
+    <div>
+      <div class="stat-num" id="pg-stat4">7년</div>
+      <div class="stat-label">AI 강의 경력</div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <p class="section-label">About</p>
+  <h2 class="section-title">강사 소개</h2>
+  <div class="divider"></div>
+  <div class="about-grid">
+    <div class="about-photo-frame" id="about-photo-frame">
+      <div class="photo-placeholder" id="about-placeholder">KJ</div>
+    </div>
+    <div class="about-content">
+      <div class="about-title-tag" id="pg-title-tag">AI 교육 전문가</div>
+      <h3 class="about-name" id="pg-name">김준호</h3>
+      <p class="about-text" id="pg-bio1">삼성, LG, 현대 등 국내 주요 대기업과 공공기관에 AI 실무 교육을 제공해 온 전문 강사입니다. 복잡한 AI 개념을 현업에서 바로 활용 가능한 방식으로 전달하는 것을 목표로 합니다.</p>
+      <p class="about-text" id="pg-bio2">단순한 이론 교육을 넘어, 실제 업무 환경에 적용 가능한 맞춤형 커리큘럼을 통해 조직의 AI 역량을 강화합니다.</p>
+      <div class="about-tags">
+        <span class="tag">ChatGPT 활용</span>
+        <span class="tag">생성형 AI</span>
+        <span class="tag">프롬프트 엔지니어링</span>
+        <span class="tag">AI 비즈니스 전략</span>
+        <span class="tag">LLM 응용</span>
+        <span class="tag">AI 리터러시</span>
+        <span class="tag">업무 자동화</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="curriculum">
+  <p class="section-label">Curriculum</p>
+  <h2 class="section-title">강의 프로그램</h2>
+  <div class="divider"></div>
+  <div class="curriculum-grid" id="curriculum-grid">
+    <div class="curriculum-card">
+      <div class="curr-num">01</div>
+      <div class="curr-title">AI 리터러시 기초</div>
+      <p class="curr-desc">AI를 처음 접하는 임직원을 위한 입문 과정. ChatGPT 실습과 생성형 AI의 핵심 개념을 익힙니다.</p>
+      <div class="curr-duration">4시간 · 입문</div>
+    </div>
+    <div class="curriculum-card">
+      <div class="curr-num">02</div>
+      <div class="curr-title">프롬프트 엔지니어링</div>
+      <p class="curr-desc">업무 효율을 극대화하는 프롬프트 설계 기법. 부서별 맞춤 실습 예제로 즉시 현업 적용이 가능합니다.</p>
+      <div class="curr-duration">6시간 · 중급</div>
+    </div>
+    <div class="curriculum-card">
+      <div class="curr-num">03</div>
+      <div class="curr-title">AI 업무 자동화</div>
+      <p class="curr-desc">반복 업무를 AI로 자동화하는 실전 과정. 노코드 툴부터 API 연동까지 단계별로 학습합니다.</p>
+      <div class="curr-duration">8시간 · 중급</div>
+    </div>
+    <div class="curriculum-card">
+      <div class="curr-num">04</div>
+      <div class="curr-title">AI 비즈니스 전략</div>
+      <p class="curr-desc">경영진 및 팀장급 대상 AI 도입 전략 수립. 조직 내 AI 로드맵 설계부터 리스크 관리까지 다룹니다.</p>
+      <div class="curr-duration">4시간 · 리더십</div>
+    </div>
+    <div class="curriculum-card">
+      <div class="curr-num">05</div>
+      <div class="curr-title">생성형 AI 심화</div>
+      <p class="curr-desc">Midjourney, Sora, Claude 등 최신 생성형 AI 툴 활용법과 콘텐츠 제작 파이프라인 구축을 다룹니다.</p>
+      <div class="curr-duration">8시간 · 심화</div>
+    </div>
+    <div class="curriculum-card">
+      <div class="curr-num">06</div>
+      <div class="curr-title">맞춤형 특강</div>
+      <p class="curr-desc">기업의 업종과 니즈에 맞게 커스터마이징된 1일 집중 교육. 사전 인터뷰를 통해 최적 설계합니다.</p>
+      <div class="curr-duration">협의 · 커스텀</div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <p class="section-label">Reviews</p>
+  <h2 class="section-title">수강 후기</h2>
+  <div class="divider"></div>
+  <div class="reviews-grid" id="reviews-grid">
+    <div class="review-card" id="rv-card-0">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">현장에서 바로 쓸 수 있는 내용으로 가득 찼습니다. 이론보다 실습 중심의 구성이 우리 팀에 딱 맞았어요.</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">이M</div>
+        <div>
+          <div class="reviewer-name">이민준 팀장</div>
+          <div class="reviewer-company">삼성전자 DX부문</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card" id="rv-card-1">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">AI에 막연한 두려움이 있었는데, 강의 후 실무에 자신감이 생겼습니다. 임원진도 매우 만족했습니다.</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">박S</div>
+        <div>
+          <div class="reviewer-name">박서연 HR팀장</div>
+          <div class="reviewer-company">현대자동차</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card" id="rv-card-2">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">복잡한 AI 개념을 이렇게 쉽게 설명해 주시는 강사는 처음입니다. 전 직원 대상으로 다시 진행하고 싶습니다.</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">최D</div>
+        <div>
+          <div class="reviewer-name">최동현 본부장</div>
+          <div class="reviewer-company">LG CNS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio">
+  <div class="portfolio-top">
+    <div>
+      <p class="section-label">Portfolio</p>
+      <h2 class="section-title">강의 현장</h2>
+    </div>
+  </div>
+  <div class="portfolio-grid" id="portfolio-grid">
+    <div class="portfolio-item" id="pf-item-0">
+      <div class="portfolio-icon">강의</div>
+      <div class="portfolio-label">기업 워크샵</div>
+    </div>
+    <div class="portfolio-item" id="pf-item-1">
+      <div class="portfolio-icon">✦</div>
+      <div class="portfolio-label">컨퍼런스</div>
+    </div>
+    <div class="portfolio-item" id="pf-item-2">
+      <div class="portfolio-icon">✦</div>
+      <div class="portfolio-label">온라인 강의</div>
+    </div>
+    <div class="portfolio-item" id="pf-item-3">
+      <div class="portfolio-icon">✦</div>
+      <div class="portfolio-label">미디어 출연</div>
+    </div>
+    <div class="portfolio-item" id="pf-item-4">
+      <div class="portfolio-icon">✦</div>
+      <div class="portfolio-label">정부 연수</div>
+    </div>
+  </div>
+  <div class="sns-row">
+    <a class="sns-btn" id="sns-youtube" href="#" target="_blank" rel="noopener">YouTube</a>
+    <a class="sns-btn" id="sns-instagram" href="#" target="_blank" rel="noopener">Instagram</a>
+    <a class="sns-btn" id="sns-blog" href="#" target="_blank" rel="noopener">Blog</a>
+  </div>
+</section>
+
+<section id="contact">
+  <h2 class="contact-title">강의 문의하기</h2>
+  <p class="contact-sub">맞춤형 커리큘럼 설계부터 일정 협의까지,<br>편하게 연락 주세요.</p>
+
+  <div class="contact-fields">
+    <input class="contact-field-input" id="cf-name" type="text" placeholder="이름">
+    <input class="contact-field-input" id="cf-phone" type="tel" placeholder="연락처">
+    <input class="contact-field-input" id="cf-region" type="text" placeholder="지역">
+    <input class="contact-field-input" id="cf-org" type="text" placeholder="소속">
+    <input class="contact-field-input full" id="cf-topic" type="text" placeholder="문의 주제">
+  </div>
+  <div class="contact-submit-wrap">
+    <button class="contact-submit-full" onclick="submitContact()">문의하기</button>
+    <p class="contact-sent-msg" id="contact-sent-msg">✓ 메일 앱이 열렸습니다. 전송 버튼을 눌러 완료해 주세요.</p>
+  </div>
+</section>
+
+<footer>
+  <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="text-decoration:none;"><div class="footer-logo" id="pg-footer-logo">AI SUHO</div></a>
+  <div class="footer-copy">© 2026 AI Suho. All rights reserved.</div>
+</footer>
+
+<script>
+// ─── FIREBASE FIRESTORE REST API ───
+const FB_PROJECT = 'project-7291588186084016733';
+const FB_API_KEY = 'AIzaSyBeQhbMJZJv2FV7LeevZaSkULGWBBcM9Bs';
+const FS_BASE    = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents`;
+
+// ── Firestore 값 → JS 변환 ──
+function fsToJs(fields) {
+  if (!fields) return {};
+  const out = {};
+  for (const [k, v] of Object.entries(fields)) {
+    if (v.stringValue   !== undefined) out[k] = v.stringValue;
+    else if (v.integerValue !== undefined) out[k] = Number(v.integerValue);
+    else if (v.booleanValue !== undefined) out[k] = v.booleanValue;
+    else if (v.arrayValue   !== undefined) out[k] = (v.arrayValue.values || []).map(i => i.stringValue !== undefined ? i.stringValue : i.integerValue !== undefined ? Number(i.integerValue) : fsToJs(i.mapValue?.fields || {}));
+    else if (v.mapValue     !== undefined) out[k] = fsToJs(v.mapValue.fields || {});
+    else out[k] = null;
+  }
+  return out;
+}
+
+// ── JS → Firestore 값 변환 ──
+function jsToFs(obj) {
+  const fields = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === null || v === undefined)  fields[k] = { nullValue: null };
+    else if (typeof v === 'boolean')    fields[k] = { booleanValue: v };
+    else if (typeof v === 'number')     fields[k] = { integerValue: String(v) };
+    else if (typeof v === 'string')     fields[k] = { stringValue: v };
+    else if (Array.isArray(v))          fields[k] = { arrayValue: { values: v.map(i => typeof i === 'string' ? { stringValue: i } : typeof i === 'number' ? { integerValue: String(i) } : { mapValue: { fields: jsToFs(i) } }) } };
+    else if (typeof v === 'object')     fields[k] = { mapValue: { fields: jsToFs(v) } };
+  }
+  return fields;
+}
+
+// ── Firestore 읽기 ──
+async function fsLoad() {
+  try {
+    const res = await fetch(`${FS_BASE}/aisuho/data?key=${FB_API_KEY}`);
+    if (!res.ok) return {};
+    const json = await res.json();
+    return fsToJs(json.fields || {});
+  } catch(e) { console.warn('Firestore 읽기 실패:', e); return {}; }
+}
+
+// ── Firestore 쓰기 (PATCH = field-level merge) ──
+async function fsSave(partial) {
+  try {
+    const fields = jsToFs(partial);
+    const updateMask = Object.keys(fields).map(k => `updateMask.fieldPaths=${encodeURIComponent(k)}`).join('&');
+    const res = await fetch(`${FS_BASE}/aisuho/data?${updateMask}&key=${FB_API_KEY}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      console.warn('Firestore 저장 실패:', err);
+      alert('저장 실패: ' + (err.error?.message || res.status) + '\nFirestore 규칙을 확인해 주세요.');
+    }
+  } catch(e) { console.warn('Firestore 저장 오류:', e); }
+}
+
+// ── 이미지 압축 (base64 → 압축 base64, max 600px) ──
+async function compressImage(base64, maxPx = 600, quality = 0.75) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxPx || height > maxPx) {
+        if (width > height) { height = Math.round(height * maxPx / width); width = maxPx; }
+        else                { width  = Math.round(width  * maxPx / height); height = maxPx; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(base64);
+    img.src = base64;
+  });
+}
+
+// ── 이미지 저장 (압축 base64를 별도 Firestore 문서에 저장) ──
+async function imgSave(key, base64) {
+  try {
+    const compressed = await compressImage(base64);
+    const fields = jsToFs({ data: compressed });
+    const res = await fetch(`${FS_BASE}/aisuho_img/${key}?key=${FB_API_KEY}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      const msg = err?.error?.message || String(res.status);
+      if (msg.includes('PERMISSION_DENIED') || msg.includes('403')) {
+        alert('이미지 저장 실패!\n\nFirebase 콘솔 → Firestore → 규칙을 아래처럼 바꿔주세요:\n\nrules_version = "2";\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if true;\n    }\n  }\n}');
+      }
+      throw new Error(msg);
+    }
+    return compressed;
+  } catch(e) { console.warn('이미지 저장 실패:', e); return null; }
+}
+
+// ── 이미지 로드 (Firestore에서 base64 가져오기) ──
+async function imgLoad(key) {
+  try {
+    const res = await fetch(`${FS_BASE}/aisuho_img/${key}?key=${FB_API_KEY}`);
+    if (!res.ok) return null;
+    const json = await res.json();
+    const obj = fsToJs(json.fields || {});
+    return obj.data || null;
+  } catch { return null; }
+}
+
+// ── 이미지 삭제 ──
+async function imgDelete(key) {
+  try {
+    await fetch(`${FS_BASE}/aisuho_img/${key}?key=${FB_API_KEY}`, { method: 'DELETE' });
+  } catch {}
+}
+
+// ─── ADMIN PASSWORD ───
+const ADMIN_PASSWORD = 'a5800a';
+function promptAdminPassword() { showPwModal(); }
+function showPwModal() {
+  const m = document.getElementById('pwModal');
+  m.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  setTimeout(() => document.getElementById('pw-input').focus(), 80);
+}
+function closePwModal() {
+  document.getElementById('pwModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function checkAdminPassword() {
+  if (document.getElementById('pw-input').value === ADMIN_PASSWORD) {
+    closePwModal(); toggleAdmin();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+// ─── CONTACT RATE LIMIT ───
+let contactAttempts = 0, contactBlocked = false;
+
+// ─── DEFAULT DATA ───
+const DEFAULT = {
+  basic: {
+    name: '김준호', titleTag: 'AI 교육 전문가', email: 'and18090@naver.com',
+    bio1: '삼성, LG, 현대 등 국내 주요 대기업과 공공기관에 AI 실무 교육을 제공해 온 전문 강사입니다. 복잡한 AI 개념을 현업에서 바로 활용 가능한 방식으로 전달하는 것을 목표로 합니다.',
+    bio2: '단순한 이론 교육을 넘어, 실제 업무 환경에 적용 가능한 맞춤형 커리큘럼을 통해 조직의 AI 역량을 강화합니다.',
+    stat1: '200+', stat2: '8,000+', stat3: '98%', stat4: '7년',
+    heroDesc: '국내 주요 기업 대상 AI 실무 교육 전문가.\nChatGPT, 생성형 AI, LLM 응용까지\n현장 밀착형 커리큘럼을 제공합니다.',
+  },
+  curriculum: [
+    { title: 'AI 리터러시 기초', desc: 'AI를 처음 접하는 임직원을 위한 입문 과정. ChatGPT 실습과 생성형 AI의 핵심 개념을 익힙니다.', duration: '4시간 · 입문' },
+    { title: '프롬프트 엔지니어링', desc: '업무 효율을 극대화하는 프롬프트 설계 기법. 부서별 맞춤 실습 예제로 즉시 현업 적용이 가능합니다.', duration: '6시간 · 중급' },
+    { title: 'AI 업무 자동화', desc: '반복 업무를 AI로 자동화하는 실전 과정. 노코드 툴부터 API 연동까지 단계별로 학습합니다.', duration: '8시간 · 중급' },
+    { title: 'AI 비즈니스 전략', desc: '경영진 및 팀장급 대상 AI 도입 전략 수립. 조직 내 AI 로드맵 설계부터 리스크 관리까지 다룹니다.', duration: '4시간 · 리더십' },
+    { title: '생성형 AI 심화', desc: 'Midjourney, Sora, Claude 등 최신 생성형 AI 툴 활용법과 콘텐츠 제작 파이프라인 구축을 다룹니다.', duration: '8시간 · 심화' },
+    { title: '맞춤형 특강', desc: '기업의 업종과 니즈에 맞게 커스터마이징된 1일 집중 교육. 사전 인터뷰를 통해 최적 설계합니다.', duration: '협의 · 커스텀' },
+  ],
+  reviews: [
+    { stars: 5, text: '현장에서 바로 쓸 수 있는 내용으로 가득 찼습니다. 이론보다 실습 중심의 구성이 우리 팀에 딱 맞았어요.', name: '이민준 팀장', company: '삼성전자 DX부문', avatar: '이M' },
+    { stars: 5, text: 'AI에 막연한 두려움이 있었는데, 강의 후 실무에 자신감이 생겼습니다. 임원진도 매우 만족했습니다.', name: '박서연 HR팀장', company: '현대자동차', avatar: '박S' },
+    { stars: 5, text: '복잡한 AI 개념을 이렇게 쉽게 설명해 주시는 강사는 처음입니다. 전 직원 대상으로 다시 진행하고 싶습니다.', name: '최동현 본부장', company: 'LG CNS', avatar: '최D' },
+  ],
+  sns: { youtube: '', instagram: '', blog: '' },
+};
+
+// ─── RUNTIME STATE ───
+let store          = { basic: {...DEFAULT.basic}, curriculum: DEFAULT.curriculum.map(o=>({...o})), reviews: DEFAULT.reviews.map(o=>({...o})), sns: {...DEFAULT.sns} };
+let curriculumData = store.curriculum;
+let reviewsData    = store.reviews;
+let snsLinks       = store.sns;
+let portfolioImages = [null,null,null,null,null];
+const portfolioLabels = ['기업 워크샵','컨퍼런스','온라인 강의','미디어 출연','정부 연수'];
+
+// ─── APPLY DATA TO PAGE ───
+async function applyStoreToPage() {
+  // Firestore에서 로드
+  const saved = await fsLoad();
+  store.basic        = { ...DEFAULT.basic,       ...(saved.basic       || {}) };
+  store.curriculum   = saved.curriculum           || DEFAULT.curriculum.map(o=>({...o}));
+  store.reviews      = saved.reviews              || DEFAULT.reviews.map(o=>({...o}));
+  store.sns          = { ...DEFAULT.sns,          ...(saved.sns         || {}) };
+  curriculumData     = store.curriculum;
+  reviewsData        = store.reviews;
+  snsLinks           = store.sns;
+
+  // 포트폴리오 라벨 불러오기
+  if (saved.portfolioLabels && Array.isArray(saved.portfolioLabels)) {
+    saved.portfolioLabels.forEach((lbl, i) => { if (lbl) portfolioLabels[i] = lbl; });
+  }
+  // 공개 화면 라벨 반영
+  portfolioLabels.forEach((lbl, i) => {
+    const el = document.querySelector('#pf-item-' + i + ' .portfolio-label');
+    if (el) el.textContent = lbl;
+  });
+
+  const b = store.basic;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('pg-name',      b.name);
+  set('pg-title-tag', b.titleTag);
+  set('pg-bio1',      b.bio1);
+  set('pg-bio2',      b.bio2);
+  set('pg-stat1',     b.stat1);
+  set('pg-stat2',     b.stat2);
+  set('pg-stat3',     b.stat3);
+  set('pg-stat4',     b.stat4);
+  const hd = document.getElementById('pg-hero-desc');
+  if (hd) hd.innerHTML = (b.heroDesc || '').replace(/\n/g,'<br>');
+
+  const yt = document.getElementById('sns-youtube');   if (yt) yt.href = snsLinks.youtube   || '#';
+  const ig = document.getElementById('sns-instagram'); if (ig) ig.href = snsLinks.instagram || '#';
+  const bl = document.getElementById('sns-blog');      if (bl) bl.href = snsLinks.blog      || '#';
+
+  renderCurriculumGrid();
+  renderReviewsGrid();
+
+  // Storage에서 이미지 로드
+  try {
+    const profileUrl = await imgLoad('profile');
+    if (profileUrl) applyProfileImgToPage(profileUrl);
+
+    for (let i = 0; i < 5; i++) {
+      const url = await imgLoad('pf_' + i);
+      if (url) { portfolioImages[i] = url; applyPortfolioImage(i, url); }
+    }
+  } catch(e) { console.warn('이미지 로드 실패:', e); }
+}
+
+function renderCurriculumGrid() {
+  const grid = document.getElementById('curriculum-grid');
+  if (!grid) return;
+  grid.innerHTML = curriculumData.map((item, i) => `
+    <div class="curriculum-card">
+      <div class="curr-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="curr-title">${item.title}</div>
+      <p class="curr-desc">${item.desc}</p>
+      <div class="curr-duration">${item.duration}</div>
+    </div>`).join('');
+}
+
+function renderReviewsGrid() {
+  const grid = document.getElementById('reviews-grid');
+  if (!grid) return;
+  grid.innerHTML = reviewsData.map((rv, i) => {
+    const s = Math.min(5, Math.max(1, rv.stars));
+    return `<div class="review-card" id="rv-card-${i}">
+      <div class="stars">${'★'.repeat(s)}${'☆'.repeat(5-s)}</div>
+      <p class="review-text">${rv.text}</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">${rv.avatar}</div>
+        <div><div class="reviewer-name">${rv.name}</div>
+             <div class="reviewer-company">${rv.company}</div></div>
+      </div></div>`;
+  }).join('');
+}
+
+// ─── ADMIN TOGGLE ───
+function toggleAdmin() {
+  const overlay = document.getElementById('adminOverlay');
+  const btn = document.getElementById('adminToggleBtn');
+  const isOpen = overlay.classList.toggle('open');
+  btn.classList.toggle('active', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+  if (isOpen) { syncBasicFields(); buildCurriculumEditor(); }
+}
+function syncBasicFields() {
+  const get = id => { const el = document.getElementById(id); return el ? el.textContent.trim() : ''; };
+  const set = (fid, val) => { const el = document.getElementById(fid); if (el) el.value = val; };
+  set('f-name',      get('pg-name'));
+  set('f-title-tag', get('pg-title-tag'));
+  set('f-bio1',      get('pg-bio1'));
+  set('f-bio2',      get('pg-bio2'));
+  set('f-stat1',     get('pg-stat1'));
+  set('f-stat2',     get('pg-stat2'));
+  set('f-stat3',     get('pg-stat3'));
+  set('f-stat4',     get('pg-stat4'));
+  const emailEl = document.getElementById('f-email');
+  if (emailEl) emailEl.value = store.basic.email || '';
+  const heroDesc = document.getElementById('pg-hero-desc');
+  if (heroDesc) { const fd = document.getElementById('f-hero-desc'); if (fd) fd.value = heroDesc.innerText; }
+}
+function handleOverlayClick(e) { /* X 버튼으로만 닫기 */ }
+
+// ─── TABS ───
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.admin-body').forEach(b => b.style.display = 'none');
+  document.getElementById(tabId).style.display = 'block';
+  if (tabId === 'tab-images')   buildPortfolioUploadGrid();
+  if (tabId === 'tab-reviews')  buildReviewsEditor();
+  if (tabId === 'tab-sns')      loadSnsFields();
+}
+
+// ─── SAVE BASIC ───
+async function saveBasic() {
+  const val = id => document.getElementById(id)?.value || '';
+  const b = {
+    name: val('f-name'), titleTag: val('f-title-tag'),
+    bio1: val('f-bio1'), bio2: val('f-bio2'),
+    stat1: val('f-stat1'), stat2: val('f-stat2'), stat3: val('f-stat3'), stat4: val('f-stat4'),
+    heroDesc: val('f-hero-desc'), email: val('f-email'),
+  };
+  store.basic = b;
+  await fsSave({ basic: b });
+  document.getElementById('pg-name').textContent      = b.name;
+  document.getElementById('pg-title-tag').textContent = b.titleTag;
+  document.getElementById('pg-bio1').textContent      = b.bio1;
+  document.getElementById('pg-bio2').textContent      = b.bio2;
+  document.getElementById('pg-stat1').textContent     = b.stat1;
+  document.getElementById('pg-stat2').textContent     = b.stat2;
+  document.getElementById('pg-stat3').textContent     = b.stat3;
+  document.getElementById('pg-stat4').textContent     = b.stat4;
+  document.getElementById('pg-hero-desc').innerHTML   = b.heroDesc.replace(/\n/g,'<br>');
+  showSaveMsg('save-msg-basic');
+}
+
+// ─── CURRICULUM EDITOR ───
+function buildCurriculumEditor() {
+  const list = document.getElementById('curr-editor-list');
+  list.innerHTML = '';
+  curriculumData.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'curr-editor-item';
+    el.innerHTML = `
+      <div class="curr-editor-header" onclick="toggleCurrEditor(this)">
+        <span class="curr-editor-header-title">${String(i+1).padStart(2,'0')} — ${item.title}</span>
+        <span class="curr-editor-toggle">▾</span>
+      </div>
+      <div class="curr-editor-body">
+        <div class="admin-field"><label class="admin-label">강의 제목</label>
+          <input class="admin-input" data-ci="${i}" data-field="title" type="text" value="${item.title}"></div>
+        <div class="admin-field"><label class="admin-label">설명</label>
+          <textarea class="admin-textarea" data-ci="${i}" data-field="desc">${item.desc}</textarea></div>
+        <div class="admin-field"><label class="admin-label">시간 / 레벨</label>
+          <input class="admin-input" data-ci="${i}" data-field="duration" type="text" value="${item.duration}"></div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+function toggleCurrEditor(header) { header.parentElement.classList.toggle('expanded'); }
+async function saveCurriculum() {
+  document.querySelectorAll('#curr-editor-list [data-ci]').forEach(el => {
+    curriculumData[+el.dataset.ci][el.dataset.field] = el.value;
+  });
+  await fsSave({ curriculum: curriculumData });
+  renderCurriculumGrid();
+  document.querySelectorAll('.curr-editor-header-title').forEach((el, i) => {
+    el.textContent = `${String(i+1).padStart(2,'0')} — ${curriculumData[i].title}`;
+  });
+  showSaveMsg('save-msg-curr');
+}
+
+// ─── REVIEWS EDITOR ───
+function buildReviewsEditor() {
+  const list = document.getElementById('reviews-editor-list');
+  list.innerHTML = '';
+  reviewsData.forEach((rv, i) => {
+    const el = document.createElement('div');
+    el.className = 'curr-editor-item';
+    el.innerHTML = `
+      <div class="curr-editor-header" onclick="toggleCurrEditor(this)">
+        <span class="curr-editor-header-title">후기 ${i+1} — ${rv.name}</span>
+        <span class="curr-editor-toggle">▾</span>
+      </div>
+      <div class="curr-editor-body">
+        <div class="admin-field"><label class="admin-label">별점 (1~5)</label>
+          <input class="admin-input" data-ri="${i}" data-field="stars" type="number" min="1" max="5" value="${rv.stars}"></div>
+        <div class="admin-field"><label class="admin-label">후기 내용</label>
+          <textarea class="admin-textarea" data-ri="${i}" data-field="text">${rv.text}</textarea></div>
+        <div class="admin-field"><label class="admin-label">이름 / 직함</label>
+          <input class="admin-input" data-ri="${i}" data-field="name" type="text" value="${rv.name}"></div>
+        <div class="admin-field"><label class="admin-label">소속</label>
+          <input class="admin-input" data-ri="${i}" data-field="company" type="text" value="${rv.company}"></div>
+        <div class="admin-field"><label class="admin-label">아바타 이니셜 (2~3자)</label>
+          <input class="admin-input" data-ri="${i}" data-field="avatar" type="text" value="${rv.avatar}" maxlength="3"></div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+async function saveReviews() {
+  document.querySelectorAll('#reviews-editor-list [data-ri]').forEach(el => {
+    const i = +el.dataset.ri, field = el.dataset.field;
+    reviewsData[i][field] = field === 'stars' ? (parseInt(el.value) || 5) : el.value;
+  });
+  await fsSave({ reviews: reviewsData });
+  renderReviewsGrid();
+  document.querySelectorAll('#reviews-editor-list .curr-editor-header-title').forEach((el, i) => {
+    el.textContent = `후기 ${i+1} — ${reviewsData[i].name}`;
+  });
+  showSaveMsg('save-msg-reviews');
+}
+
+// ─── SNS ───
+function loadSnsFields() {
+  document.getElementById('f-sns-youtube').value   = snsLinks.youtube;
+  document.getElementById('f-sns-instagram').value = snsLinks.instagram;
+  document.getElementById('f-sns-blog').value       = snsLinks.blog;
+}
+async function saveSns() {
+  snsLinks.youtube   = document.getElementById('f-sns-youtube').value.trim();
+  snsLinks.instagram = document.getElementById('f-sns-instagram').value.trim();
+  snsLinks.blog      = document.getElementById('f-sns-blog').value.trim();
+  await fsSave({ sns: snsLinks });
+  document.getElementById('sns-youtube').href   = snsLinks.youtube   || '#';
+  document.getElementById('sns-instagram').href = snsLinks.instagram || '#';
+  document.getElementById('sns-blog').href      = snsLinks.blog      || '#';
+  showSaveMsg('save-msg-sns');
+}
+
+// ─── IMAGE UPLOAD ───
+function handleImageUpload(event, type) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { alert('파일 크기는 10MB 이하여야 합니다.'); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => { if (type === 'profile') applyProfileImage(e.target.result, file.name); };
+  reader.readAsDataURL(file);
+}
+
+async function applyProfileImage(src, name) {
+  // 즉시 화면에 반영
+  document.getElementById('profile-preview').style.display = 'block';
+  document.getElementById('profile-preview-img').src = src;
+  document.getElementById('profile-preview-name').textContent = '저장 중...';
+  document.getElementById('profile-upload-zone').style.display = 'none';
+  applyProfileImgToPage(src);
+
+  // Firestore에 이미지 저장 (압축 base64)
+  const saved = await imgSave('profile', src);
+  if (saved) {
+    document.getElementById('profile-preview-name').textContent = name || 'profile.jpg';
+    applyProfileImgToPage(saved);
+    showSaveMsg('save-msg-basic');
+  } else {
+    document.getElementById('profile-preview-name').textContent = '⚠ 저장 실패 — Firestore 규칙 확인 필요';
+  }
+}
+function applyProfileImgToPage(src) {
+  const frame = document.getElementById('about-photo-frame');
+  document.getElementById('about-placeholder').style.display = 'none';
+  let img = frame.querySelector('img');
+  if (!img) { img = document.createElement('img'); frame.appendChild(img); }
+  img.src = src;
+}
+
+async function removeImage(type) {
+  if (type === 'profile') {
+    document.getElementById('profile-preview').style.display = 'none';
+    document.getElementById('profile-upload-zone').style.display = 'block';
+    document.getElementById('about-placeholder').style.display = '';
+    const img = document.getElementById('about-photo-frame').querySelector('img');
+    if (img) img.remove();
+    await imgDelete('profile');
+  }
+}
+
+// ─── PORTFOLIO UPLOAD GRID ───
+function buildPortfolioUploadGrid() {
+  const grid = document.getElementById('portfolio-upload-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
+    const div = document.createElement('div');
+    div.className = 'portfolio-upload-item';
+    div.dataset.idx = i;
+    if (portfolioImages[i]) {
+      div.innerHTML = `<img src="${portfolioImages[i]}" alt=""><button class="pf-remove" onclick="removePfImage(event,${i})">✕</button>`;
+    } else {
+      div.innerHTML = `<input type="file" accept="image/*" onchange="handlePfUpload(event,${i})"><div class="pf-add-icon">+</div><div class="pf-slot-label">${portfolioLabels[i]}</div>`;
+    }
+    const labelInput = document.createElement('input');
+    labelInput.type = 'text';
+    labelInput.value = portfolioLabels[i];
+    labelInput.placeholder = '라벨 입력 (예: 기업 워크샵)';
+    labelInput.style.cssText = 'width:100%;padding:4px 8px;font-size:12px;border:1px solid #444;border-radius:6px;background:#1a1a2e;color:#fff;text-align:center;box-sizing:border-box;';
+    labelInput.oninput = new Function('e', `
+      portfolioLabels[${i}] = e.target.value;
+      const pubLabel = document.querySelector('#pf-item-${i} .portfolio-label');
+      if (pubLabel) pubLabel.textContent = e.target.value;
+    `);
+    labelInput.onblur = async () => { await fsSave({ portfolioLabels }); };
+    wrap.appendChild(div);
+    wrap.appendChild(labelInput);
+    grid.appendChild(wrap);
+  }
+}
+async function handlePfUpload(event, idx) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const base64 = e.target.result;
+    portfolioImages[idx] = base64;
+    applyPortfolioImage(idx, base64);
+    buildPortfolioUploadGrid();
+    const saved = await imgSave('pf_' + idx, base64);
+    if (saved) { portfolioImages[idx] = saved; applyPortfolioImage(idx, saved); buildPortfolioUploadGrid(); }
+  };
+  reader.readAsDataURL(file);
+}
+async function removePfImage(event, idx) {
+  event.stopPropagation();
+  portfolioImages[idx] = null;
+  await imgDelete('pf_' + idx);
+  const pfItem = document.getElementById(`pf-item-${idx}`);
+  if (pfItem) { const img = pfItem.querySelector('img'); if (img) img.remove(); const icon = pfItem.querySelector('.portfolio-icon'); if (icon) icon.style.display = ''; }
+  buildPortfolioUploadGrid();
+}
+function applyPortfolioImage(idx, src) {
+  const pfItem = document.getElementById(`pf-item-${idx}`);
+  if (!pfItem) return;
+  let img = pfItem.querySelector('img');
+  if (!img) { img = document.createElement('img'); pfItem.insertBefore(img, pfItem.firstChild); }
+  img.src = src;
+  const icon = pfItem.querySelector('.portfolio-icon'); if (icon) icon.style.display = 'none';
+}
+
+function showSaveMsg(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2500);
+}
+
+// ─── CONTACT SUBMIT ───
+function submitContact() {
+  if (contactBlocked) { showContactError('연속 시도 횟수를 초과했습니다. 잠시 후 다시 시도해 주세요.'); return; }
+  const fields = [
+    { id: 'cf-name', label: '이름' }, { id: 'cf-phone', label: '연락처' },
+    { id: 'cf-region', label: '지역' }, { id: 'cf-org', label: '소속' },
+    { id: 'cf-topic', label: '문의 주제' },
+  ];
+  for (const f of fields) {
+    const el = document.getElementById(f.id);
+    if (!el.value.trim()) {
+      contactAttempts++;
+      el.style.borderColor = '#e06c75';
+      el.focus();
+      setTimeout(() => el.style.borderColor = '', 1800);
+      showContactError(`${f.label}을(를) 입력해 주세요.`);
+      if (contactAttempts >= 5) {
+        contactBlocked = true;
+        const btn = document.querySelector('.contact-submit-full');
+        btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
+        showContactError('연속 시도 횟수를 초과했습니다. 30초 후 다시 시도해 주세요.');
+        setTimeout(() => {
+          contactAttempts = 0; contactBlocked = false;
+          btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = '';
+          const err = document.getElementById('contact-field-error');
+          if (err) err.textContent = '';
+        }, 30000);
+      }
+      return;
+    }
+  }
+  contactAttempts = 0;
+  const vals = fields.reduce((acc, f) => { acc[f.id] = document.getElementById(f.id).value.trim(); return acc; }, {});
+  const subject = encodeURIComponent('[강의 문의] ' + vals['cf-topic']);
+  const body = encodeURIComponent(
+    '이름: ' + vals['cf-name'] + '\n연락처: ' + vals['cf-phone'] + '\n지역: ' + vals['cf-region'] +
+    '\n소속: ' + vals['cf-org'] + '\n문의 주제: ' + vals['cf-topic'] + '\n\n---\nAI SUHO 홈페이지를 통해 문의드립니다.'
+  );
+  window.location.href = 'mailto:' + (store.basic.email || 'and18090@naver.com') + '?subject=' + subject + '&body=' + body;
+  const msg = document.getElementById('contact-sent-msg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 6000);
+}
+function showContactError(msg) {
+  let el = document.getElementById('contact-field-error');
+  if (!el) {
+    el = document.createElement('p');
+    el.id = 'contact-field-error';
+    el.style.cssText = 'font-size:12px;color:#e06c75;letter-spacing:0.05em;margin-bottom:10px;position:relative;text-align:center;';
+    document.querySelector('.contact-submit-wrap').insertBefore(el, document.querySelector('.contact-submit-wrap').firstChild);
+  }
+  el.textContent = msg;
+}
+
+// ─── FIRESTORE 규칙 체크 ───
+async function checkFirestoreRules() {
+  try {
+    const testFields = { stringValue: 'test' };
+    const res = await fetch(FS_BASE + '/aisuho/data?updateMask.fieldPaths=_ping&key=' + FB_API_KEY, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: { _ping: { stringValue: 'ok' } } }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      if (err?.error?.status === 'PERMISSION_DENIED') {
+        console.warn('Firestore 쓰기 권한 없음 — 규칙을 확인하세요');
+      }
+    }
+  } catch {}
+}
+
+// ─── INIT ───
+document.addEventListener('DOMContentLoaded', () => {
+  checkFirestoreRules();
+  applyStoreToPage();
+  document.querySelectorAll('.upload-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => { if (zone.id === 'profile-upload-zone') applyProfileImage(ev.target.result, file.name); };
+      reader.readAsDataURL(file);
+    });
+  });
+});
+document.addEventListener('contextmenu', e => e.preventDefault());
+</script>
+</body>
+</html>
