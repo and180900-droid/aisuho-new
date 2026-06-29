@@ -318,6 +318,7 @@ nav a:hover::after{width:100%;}
 section{padding:120px 0;position:relative;}
 .section-head{margin-bottom:64px;max-width:640px;}
 .section-head p{margin-top:18px;color:#6b5d4d;font-size:16px;line-height:1.8;}
+.mobile-break{display:none;}
 
 /* ---------- About ---------- */
 .about{background:var(--paper);}
@@ -381,6 +382,8 @@ section{padding:120px 0;position:relative;}
   font-size:15px;
   color:var(--gold-soft);
   line-height:1;
+  display:inline-block;
+  transform:translateY(1px);
 }
 .about-card .role{font-family:var(--mono);font-size:12px;letter-spacing:0.12em;color:var(--gold-soft);text-transform:uppercase;position:relative;z-index:1;}
 .about-card h3{font-family:var(--serif);font-size:30px;font-weight:700;margin-top:10px;margin-bottom:20px;position:relative;z-index:1;}
@@ -580,6 +583,8 @@ footer{
   font-size:24px;
   color:var(--gold-soft);
   line-height:1;
+  display:inline-block;
+  transform:translateY(1px);
 }
 .social-icon .ic-label{
   font-family:var(--mono);
@@ -734,6 +739,7 @@ footer{
 
 /* ---------- Mobile ---------- */
 @media (max-width:880px){
+  .mobile-break{display:block;}
   nav ul, .nav-cta{display:none;}
   .mobile-toggle{display:flex;position:relative;z-index:210;}
   .mobile-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
@@ -758,7 +764,7 @@ footer{
   nav ul.mobile-open a::after{display:none;}
 
   .hero{padding-top:104px;min-height:auto;padding-bottom:56px;}
-  .scroll-cue{position:static;margin:32px 0 0;left:auto;bottom:auto;}
+  .scroll-cue{position:static;display:flex;margin:36px 0 0;left:auto;bottom:auto;}
   .hero-inner{grid-template-columns:1fr;gap:40px;}
   .hero-stats{flex-direction:row;flex-wrap:wrap;border-left:none;border-top:1px solid rgba(255,255,255,0.12);padding-left:0;padding-top:24px;gap:22px 28px;}
   .hero-types{flex-wrap:wrap;gap:18px;}
@@ -922,8 +928,8 @@ footer{
         <div class="stat-label">AI 강의 경력</div>
       </div>
     </div>
+    <div class="scroll-cue" id="scrollCue"><div class="ln"></div>SCROLL</div>
   </div>
-  <div class="scroll-cue" id="scrollCue"><div class="ln"></div>SCROLL</div>
 </section>
 
 <section class="about" id="about">
@@ -969,7 +975,7 @@ footer{
     <div class="section-head">
       <div class="eyebrow">Curriculum</div>
       <h2 class="section-title">강의 프로그램</h2>
-      <p>입문부터 리더십 레벨까지, 조직의 단계에 맞춘 6가지 트랙입니다.</p>
+      <p>입문부터 리더십 레벨까지,<br class="mobile-break">조직의 단계에 맞춘 6가지 트랙입니다.</p>
     </div>
     <div class="curr-grid" id="currGrid">
       <!-- JS renders curriculum cards -->
