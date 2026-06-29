@@ -330,7 +330,7 @@ section{padding:120px 0;position:relative;}
 .about-card{
   background:var(--ink);
   border-radius:18px;
-  padding:48px 36px;
+  padding:0 0 36px;
   color:var(--white);
   position:relative;
   overflow:hidden;
@@ -341,17 +341,23 @@ section{padding:120px 0;position:relative;}
   top:-40%;right:-40%;
   width:220px;height:220px;
   background:radial-gradient(circle, rgba(201,155,74,0.3), transparent 70%);
+  pointer-events:none;
+}
+.about-card-body{
+  padding:28px 36px 0;
+  position:relative;
+  z-index:1;
 }
 .avatar-mono{
-  width:128px;height:172px;
-  border-radius:16px;
+  width:100%;
+  aspect-ratio:4/5;
+  border-radius:0;
   background:linear-gradient(135deg, var(--brand), var(--gold));
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--serif);font-weight:700;font-size:26px;color:var(--white);
-  margin-bottom:24px;
+  font-family:var(--serif);font-weight:700;font-size:34px;color:var(--white);
   position:relative;z-index:1;
   background-size:cover;
-  background-position:center;
+  background-position:top center;
 }
 .about-card .social-row{
   display:flex;
@@ -364,6 +370,7 @@ section{padding:120px 0;position:relative;}
   border-radius:50%;
   border:1px solid rgba(255,255,255,0.25);
   display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
   transition:border-color 0.25s, background 0.25s, transform 0.25s;
 }
 .about-card .social-row a:hover{border-color:var(--gold);background:rgba(201,155,74,0.12);transform:translateY(-2px);}
@@ -745,8 +752,8 @@ footer{
   .hero-arc{width:520px;height:520px;right:-260px;}
 
   .about-grid{grid-template-columns:1fr;gap:40px;}
-  .about-card{padding:40px 28px;}
-  .avatar-mono{width:112px;height:150px;}
+  .about-card{padding:0 0 32px;}
+  .about-card-body{padding:24px 28px 0;}
 
   .curr-grid{grid-template-columns:1fr;}
   .review-track{grid-template-columns:1fr;}
@@ -783,8 +790,8 @@ footer{
   .section-title{font-size:26px;}
   .section-head{margin-bottom:44px;}
 
-  .about-card{padding:32px 22px;}
-  .avatar-mono{width:96px;height:128px;}
+  .about-card{padding:0 0 28px;}
+  .about-card-body{padding:20px 22px 0;}
   .about-card h3{font-size:25px;}
   .about-text p:first-of-type{font-size:17px;}
   .about-text p{font-size:15.5px;}
@@ -906,26 +913,28 @@ footer{
   <div class="wrap about-grid">
     <div class="about-card">
       <div class="avatar-mono" id="instructorInitial">이시</div>
-      <div class="role">AI 교육 전문가</div>
-      <h3 id="instructorName">이시헌</h3>
-      <div class="social-row">
-        <a href="#" id="cardLinkInstagram" target="_blank" title="Instagram">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
-        </a>
-        <a href="#" id="cardLinkYoutube" target="_blank" title="YouTube">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.2v5.6l5-2.8z" fill="#E0B978" stroke="none"/></svg>
-        </a>
-        <a href="#" id="cardLinkBlog" target="_blank" title="Blog">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="M7.5 9.5h5M7.5 13h9" stroke-linecap="round"/><path d="M17 13.2l2.6 2.6-1 3-3-1z" fill="#E0B978" stroke="#E0B978" stroke-width="1" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-      <div class="tags">
-        <span class="tag">ChatGPT 활용</span>
-        <span class="tag">생성형 AI</span>
-        <span class="tag">프롬프트 엔지니어링</span>
-        <span class="tag">AI 비즈니스 전략</span>
-        <span class="tag">LLM 응용</span>
-        <span class="tag">업무 자동화</span>
+      <div class="about-card-body">
+        <div class="role">AI 교육 전문가</div>
+        <h3 id="instructorName">이시헌</h3>
+        <div class="social-row">
+          <a href="#" id="cardLinkInstagram" target="_blank" title="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a href="#" id="cardLinkYoutube" target="_blank" title="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.2v5.6l5-2.8z" fill="#E0B978" stroke="none"/></svg>
+          </a>
+          <a href="#" id="cardLinkBlog" target="_blank" title="Blog">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="M7.5 9.5h5M7.5 13h9" stroke-linecap="round"/><path d="M17 13.2l2.6 2.6-1 3-3-1z" fill="#E0B978" stroke="#E0B978" stroke-width="1" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="tags">
+          <span class="tag">ChatGPT 활용</span>
+          <span class="tag">생성형 AI</span>
+          <span class="tag">프롬프트 엔지니어링</span>
+          <span class="tag">AI 비즈니스 전략</span>
+          <span class="tag">LLM 응용</span>
+          <span class="tag">업무 자동화</span>
+        </div>
       </div>
     </div>
     <div class="about-text">
