@@ -301,17 +301,27 @@ nav a:hover::after{width:100%;}
 }
 
 .scroll-cue{
-  position:absolute;
-  bottom:36px;left:32px;
-  display:flex;align-items:center;gap:10px;
+  position:fixed;
+  right:18px;
+  bottom:28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
   font-family:var(--mono);
-  font-size:11px;
+  font-size:10px;
   letter-spacing:0.15em;
-  color:rgba(255,255,255,0.4);
-  z-index:2;
+  color:rgba(255,255,255,0.45);
+  z-index:50;
+  writing-mode:vertical-rl;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.4s ease;
 }
-.scroll-cue .ln{width:1px;height:28px;background:rgba(255,255,255,0.3);position:relative;overflow:hidden;}
-.scroll-cue .ln::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:var(--gold);animation:scrollDrip 2s ease-in-out infinite;}
+.scroll-cue.visible{opacity:1;}
+.scroll-cue .ln{width:28px;height:1px;background:rgba(255,255,255,0.3);position:relative;overflow:hidden;writing-mode:horizontal-tb;}
+.scroll-cue .ln::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);animation:scrollDripH 2s ease-in-out infinite;}
+@keyframes scrollDripH{0%{left:-100%;}100%{left:100%;}}
 @keyframes scrollDrip{0%{top:-100%;}100%{top:100%;}}
 
 /* ---------- Section base ---------- */
@@ -764,7 +774,8 @@ footer{
   nav ul.mobile-open a::after{display:none;}
 
   .hero{padding-top:104px;min-height:auto;padding-bottom:56px;}
-  .scroll-cue{position:static;display:flex;margin:36px 0 0;left:auto;bottom:auto;}
+  .scroll-cue{right:14px;bottom:20px;}
+  .scroll-cue .ln{width:20px;}
   .hero-inner{grid-template-columns:1fr;gap:40px;}
   .hero-stats{flex-direction:row;flex-wrap:wrap;border-left:none;border-top:1px solid rgba(255,255,255,0.12);padding-left:0;padding-top:24px;gap:22px 28px;}
   .hero-types{flex-wrap:wrap;gap:18px;}
@@ -928,8 +939,8 @@ footer{
         <div class="stat-label">AI 강의 경력</div>
       </div>
     </div>
-    <div class="scroll-cue" id="scrollCue"><div class="ln"></div>SCROLL</div>
   </div>
+  <div class="scroll-cue" id="scrollCue"><div class="ln"></div>SCROLL</div>
 </section>
 
 <section class="about" id="about">
@@ -1480,10 +1491,15 @@ window.addEventListener('scroll', () => {
   const header = document.getElementById('siteHeader');
   if(window.scrollY > 40) header.classList.add('scrolled');
   else header.classList.remove('scrolled');
+
+  const cue = document.getElementById('scrollCue');
+  if(window.scrollY > window.innerHeight * 0.5) cue.classList.remove('visible');
+  else cue.classList.add('visible');
 });
 
 /* ============ Init ============ */
 loadSite();
+setTimeout(() => document.getElementById('scrollCue').classList.add('visible'), 400);
 </script>
 
 </body>
