@@ -1246,7 +1246,7 @@ function textWithBreaks(str){
   const escaped = escapeHtml(str);
   return escaped
     .replace(/\n/g, '<br>')
-    .replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+    .replace(/&lt;\s*\/?\s*br\s*\/?\s*&gt;/gi, '<br>');
 }
 
 /* ============ Firestore Load/Save ============ */
