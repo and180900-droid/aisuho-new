@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -46,3 +47,1479 @@ input, textarea{
   user-select:text;
 }
 ::selection{background:var(--gold);color:var(--white);}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important;}
+}
+
+/* ---------- Utility ---------- */
+.wrap{max-width:1160px;margin:0 auto;padding:0 32px;}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--gold);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+}
+.eyebrow::before{
+  content:'';
+  width:24px;height:1px;
+  background:var(--gold);
+}
+.section-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:clamp(28px,4vw,42px);
+  line-height:1.3;
+  letter-spacing:-0.01em;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+svg{display:block;}
+
+/* ---------- Nav ---------- */
+header{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:200;
+  background:rgba(42,31,24,0.0);
+  backdrop-filter:blur(0px);
+  transition:background 0.4s ease, backdrop-filter 0.4s ease, padding 0.3s ease;
+  padding:26px 0;
+}
+header.scrolled{
+  background:rgba(42,31,24,0.92);
+  backdrop-filter:blur(14px);
+  padding:16px 0;
+  box-shadow:0 1px 0 rgba(201,155,74,0.18);
+}
+.nav-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:19px;
+  color:var(--white);
+  letter-spacing:0.01em;
+  display:flex;align-items:center;gap:8px;
+}
+.logo .dash{display:inline-flex;gap:3px;}
+.logo .dash span{width:4px;height:14px;background:var(--gold);border-radius:1px;transform:skewX(-12deg);}
+.logo b{color:var(--gold);font-weight:700;}
+nav ul{
+  display:flex;
+  gap:40px;
+  list-style:none;
+}
+nav a{
+  font-size:14.5px;
+  color:rgba(255,255,255,0.78);
+  position:relative;
+  padding:4px 0;
+  transition:color 0.25s;
+}
+nav a:hover{color:var(--white);}
+nav a::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;
+  width:0;height:1px;
+  background:var(--gold);
+  transition:width 0.3s ease;
+}
+nav a:hover::after{width:100%;}
+.nav-cta{
+  font-size:13.5px;
+  color:var(--ink);
+  background:var(--gold);
+  padding:10px 20px;
+  border-radius:999px;
+  letter-spacing:0.01em;
+  font-weight:600;
+  transition:transform 0.25s, box-shadow 0.25s;
+}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(201,155,74,0.4);}
+.nav-right{display:flex;align-items:center;gap:24px;}
+.admin-trigger{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  cursor:pointer;
+  transition:background 0.3s;
+}
+.admin-trigger:hover{background:var(--gold);}
+
+.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+.mobile-toggle span{width:22px;height:2px;background:var(--white);}
+
+/* ---------- Hero ---------- */
+.hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  position:relative;
+  background:
+    radial-gradient(ellipse 90% 70% at 78% 20%, rgba(201,155,74,0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 80% at 15% 100%, rgba(139,94,52,0.25) 0%, transparent 55%),
+    linear-gradient(160deg, #221813 0%, var(--ink) 50%, #1c140f 100%);
+  color:var(--white);
+  padding-top:120px;
+  padding-bottom:80px;
+  overflow:hidden;
+}
+.hero-arc{
+  position:absolute;
+  right:-180px;top:50%;
+  transform:translateY(-50%);
+  width:760px;height:760px;
+  border:1px solid rgba(201,155,74,0.25);
+  border-radius:50%;
+  pointer-events:none;
+}
+.hero-arc::before{
+  content:'';
+  position:absolute;
+  inset:60px;
+  border:1px solid rgba(201,155,74,0.12);
+  border-radius:50%;
+}
+.hero-grid{
+  position:absolute;
+  inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:linear-gradient(to bottom, black, transparent 85%);
+  pointer-events:none;
+}
+.hero-inner{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:1.3fr 0.7fr;
+  gap:60px;
+  align-items:end;
+}
+.hero-tag{
+  font-family:var(--mono);
+  font-size:13px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--gold-soft);
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;
+  opacity:0;
+  animation:fadeUp 0.9s ease forwards 0.1s;
+}
+.hero-tag .marks{display:flex;gap:3px;}
+.hero-tag .marks span{width:3px;height:13px;background:var(--gold);border-radius:1px;transform:skewX(-12deg);}
+.hero h1{
+  font-family:var(--serif);
+  font-weight:900;
+  font-size:clamp(40px,6vw,68px);
+  line-height:1.22;
+  letter-spacing:-0.02em;
+  opacity:0;
+  animation:fadeUp 0.9s ease forwards 0.25s;
+}
+.hero h1 em{
+  font-style:normal;
+  color:var(--gold);
+  font-weight:700;
+}
+.hero-desc{
+  margin-top:28px;
+  font-size:17px;
+  color:rgba(255,255,255,0.68);
+  max-width:480px;
+  line-height:1.85;
+  opacity:0;
+  animation:fadeUp 0.9s ease forwards 0.4s;
+}
+.hero-types{
+  display:flex;
+  gap:28px;
+  margin-top:34px;
+  opacity:0;
+  animation:fadeUp 0.9s ease forwards 0.5s;
+}
+.htype{display:flex;align-items:center;gap:10px;}
+.htype .ic{
+  width:42px;height:42px;
+  border-radius:50%;
+  border:1px solid rgba(201,155,74,0.45);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(201,155,74,0.06);
+}
+.htype span{font-size:14.5px;color:rgba(255,255,255,0.85);font-weight:500;}
+.hero-cta{
+  margin-top:36px;
+  display:flex;
+  gap:16px;
+  opacity:0;
+  animation:fadeUp 0.9s ease forwards 0.6s;
+}
+.btn-primary{
+  background:var(--gold);
+  color:var(--ink);
+  padding:16px 30px;
+  border-radius:8px;
+  font-weight:600;
+  font-size:15px;
+  transition:transform 0.25s, box-shadow 0.25s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(201,155,74,0.35);}
+.btn-ghost{
+  border:1px solid rgba(255,255,255,0.25);
+  color:var(--white);
+  padding:16px 30px;
+  border-radius:8px;
+  font-weight:500;
+  font-size:15px;
+  transition:border-color 0.25s, background 0.25s;
+}
+.btn-ghost:hover{border-color:var(--gold);background:rgba(201,155,74,0.08);}
+
+.hero-stats{
+  display:flex;
+  flex-direction:column;
+  gap:26px;
+  padding-left:40px;
+  border-left:1px solid rgba(255,255,255,0.12);
+  opacity:0;
+  animation:fadeUp 0.9s ease forwards 0.75s;
+}
+.stat-num{
+  font-family:var(--mono);
+  font-size:34px;
+  font-weight:500;
+  color:var(--white);
+  display:flex;align-items:baseline;gap:4px;
+}
+.stat-num span{color:var(--gold);font-size:20px;}
+.stat-label{font-size:13px;color:var(--grey);margin-top:4px;letter-spacing:0.02em;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.scroll-cue{
+  position:fixed;
+  right:18px;
+  bottom:28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:0.15em;
+  color:rgba(255,255,255,0.45);
+  z-index:50;
+  writing-mode:vertical-rl;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.4s ease;
+}
+.scroll-cue.visible{opacity:1;}
+.scroll-cue .ln{width:28px;height:1px;background:rgba(255,255,255,0.3);position:relative;overflow:hidden;writing-mode:horizontal-tb;}
+.scroll-cue .ln::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);animation:scrollDripH 2s ease-in-out infinite;}
+@keyframes scrollDripH{0%{left:-100%;}100%{left:100%;}}
+@keyframes scrollDrip{0%{top:-100%;}100%{top:100%;}}
+
+/* ---------- Section base ---------- */
+section{padding:120px 0;position:relative;}
+.section-head{margin-bottom:64px;max-width:640px;}
+.section-head p{margin-top:18px;color:#6b5d4d;font-size:16px;line-height:1.8;}
+.mobile-break{display:none;}
+
+/* ---------- About ---------- */
+.about{background:var(--paper);}
+.about-grid{
+  display:grid;
+  grid-template-columns:0.85fr 1.15fr;
+  gap:70px;
+  align-items:start;
+}
+.about-card{
+  background:var(--ink);
+  border-radius:18px;
+  padding:0 0 36px;
+  color:var(--white);
+  position:relative;
+  overflow:hidden;
+}
+.about-card::after{
+  content:'';
+  position:absolute;
+  top:-40%;right:-40%;
+  width:220px;height:220px;
+  background:radial-gradient(circle, rgba(201,155,74,0.3), transparent 70%);
+  pointer-events:none;
+}
+.about-card-body{
+  padding:28px 36px 0;
+  position:relative;
+  z-index:1;
+}
+.avatar-mono{
+  width:100%;
+  aspect-ratio:4/5;
+  border-radius:0;
+  background:linear-gradient(135deg, var(--brand), var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:700;font-size:34px;color:var(--white);
+  position:relative;z-index:1;
+  background-size:cover;
+  background-position:top center;
+}
+.about-card .social-row{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+  position:relative;z-index:1;
+}
+.about-card .social-row a{
+  width:36px;height:36px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.25);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:border-color 0.25s, background 0.25s, transform 0.25s;
+}
+.about-card .social-row a:hover{border-color:var(--gold);background:rgba(201,155,74,0.12);transform:translateY(-2px);}
+.about-card .social-row svg{width:16px;height:16px;}
+.ic-letter{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:15px;
+  color:var(--gold-soft);
+  line-height:1;
+  display:inline-block;
+}
+.about-card .role{font-family:var(--mono);font-size:12px;letter-spacing:0.12em;color:var(--gold-soft);text-transform:uppercase;position:relative;z-index:1;}
+.about-card h3{font-family:var(--serif);font-size:30px;font-weight:700;margin-top:10px;margin-bottom:20px;position:relative;z-index:1;}
+.about-card .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;position:relative;z-index:1;}
+.about-card .tag{
+  font-size:12.5px;
+  padding:7px 14px;
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:999px;
+  color:rgba(255,255,255,0.75);
+}
+.about-text p{
+  font-size:16.5px;
+  color:#4a3c2e;
+  margin-bottom:22px;
+  line-height:1.9;
+}
+.about-text p:first-of-type{
+  font-size:19px;
+  font-weight:500;
+  color:var(--ink);
+}
+.about-divider{
+  width:48px;height:3px;
+  background:var(--gold);
+  margin:32px 0;
+  border-radius:2px;
+}
+
+/* ---------- Curriculum ---------- */
+.curriculum{background:var(--ink);color:var(--white);}
+.curriculum .section-head p{color:rgba(255,255,255,0.55);}
+.curr-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:rgba(255,255,255,0.08);
+  border-radius:18px;
+  overflow:hidden;
+}
+.curr-card{
+  background:var(--ink);
+  padding:38px 32px;
+  transition:background 0.35s ease;
+  position:relative;
+}
+.curr-card:hover{background:var(--ink-soft);}
+.curr-num{
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--gold);
+  letter-spacing:0.1em;
+}
+.curr-card h4{
+  font-family:var(--serif);
+  font-size:21px;
+  font-weight:600;
+  margin:16px 0 12px;
+}
+.curr-card p{
+  font-size:14.5px;
+  color:rgba(255,255,255,0.55);
+  line-height:1.75;
+  margin-bottom:22px;
+}
+.curr-meta{
+  display:flex;
+  gap:10px;
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--gold-soft);
+}
+.curr-meta span:first-child{color:rgba(255,255,255,0.35);}
+
+/* ---------- Reviews ---------- */
+.reviews{background:var(--paper);}
+.review-track{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:28px;
+}
+.review-card{
+  background:var(--white);
+  border-radius:16px;
+  padding:34px 30px;
+  border:1px solid var(--paper-dim);
+  position:relative;
+}
+.review-stars{color:var(--gold);font-size:15px;letter-spacing:2px;margin-bottom:18px;}
+.review-card p{
+  font-size:15.5px;
+  color:#4a3c2e;
+  line-height:1.85;
+  margin-bottom:28px;
+  min-height:84px;
+}
+.review-who{display:flex;align-items:center;gap:14px;}
+.review-avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--ink);
+  color:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:14px;font-weight:700;
+}
+.review-name{font-size:14px;font-weight:600;color:var(--ink);}
+.review-org{font-size:12.5px;color:var(--grey);margin-top:1px;}
+
+/* ---------- Portfolio ---------- */
+.portfolio{background:var(--ink);color:var(--white);}
+.portfolio .section-head p{color:rgba(255,255,255,0.55);}
+.port-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:160px;
+  gap:14px;
+}
+.port-grid .pf:nth-child(1){grid-column:span 2;grid-row:span 2;}
+.port-grid .pf:nth-child(4){grid-column:span 2;}
+.pf{
+  border-radius:14px;
+  background:linear-gradient(135deg, var(--ink-soft), #4a372a);
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-end;
+  padding:20px;
+  cursor:default;
+}
+.pf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.pf-label{
+  position:relative;z-index:2;
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:0.08em;
+  color:var(--white);
+  background:rgba(0,0,0,0.35);
+  padding:6px 12px;
+  border-radius:999px;
+  backdrop-filter:blur(6px);
+}
+.pf::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%);
+  z-index:1;
+}
+
+/* ---------- Contact ---------- */
+.contact{
+  background:linear-gradient(135deg, var(--ink) 0%, #3C2A1C 100%);
+  color:var(--white);
+  text-align:center;
+}
+.contact .section-head{margin:0 auto 44px;text-align:center;}
+.contact .eyebrow{justify-content:center;}
+.contact .eyebrow::before{display:none;}
+.contact h2{font-family:var(--serif);font-size:clamp(30px,4.5vw,46px);font-weight:700;line-height:1.4;}
+.contact h2 .accent{color:var(--gold);}
+.contact-sub{margin-top:20px;color:rgba(255,255,255,0.6);font-size:16px;line-height:1.8;}
+.contact-btn{
+  margin-top:40px;
+  display:inline-flex;
+  align-items:center;gap:10px;
+  background:var(--gold);
+  color:var(--ink);
+  padding:18px 38px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:16px;
+  transition:transform 0.25s,box-shadow 0.25s;
+}
+.contact-btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(201,155,74,0.4);}
+/* ---------- Footer ---------- */
+footer{
+  background:#1c140f;
+  color:rgba(255,255,255,0.45);
+  padding:44px 0;
+}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+.footer-inner .logo{font-size:16px;}
+.social-links{display:flex;gap:14px;flex-shrink:0;}
+.social-icon{
+  width:84px;height:74px;
+  border-radius:14px;
+  background:linear-gradient(160deg, #3C2D22, #2A1F18);
+  border:1px solid rgba(201,155,74,0.22);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;
+  flex-shrink:0;
+  transition:border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.social-icon:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 10px 24px rgba(201,155,74,0.18);}
+.social-icon svg{width:22px;height:22px;}
+.ic-letter-lg{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:24px;
+  color:var(--gold-soft);
+  line-height:1;
+  display:inline-block;
+}
+.social-icon .ic-label{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.04em;
+  color:rgba(255,255,255,0.8);
+}
+.footer-copy{font-size:13px;}
+
+/* ---------- Admin Panel ---------- */
+.admin-overlay{
+  position:fixed;inset:0;
+  background:rgba(20,14,10,0.7);
+  backdrop-filter:blur(4px);
+  z-index:999;
+  display:none;
+  align-items:center;justify-content:center;
+}
+.admin-overlay.active{display:flex;}
+.admin-login-box{
+  background:var(--white);
+  border-radius:16px;
+  padding:40px;
+  width:340px;
+  text-align:center;
+  position:relative;
+}
+.admin-login-box h3{font-family:var(--serif);font-size:20px;margin-bottom:20px;}
+.admin-login-box input{
+  width:100%;
+  padding:14px 16px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:15px;
+  margin-bottom:12px;
+  outline:none;
+}
+.admin-login-box input:focus{border-color:var(--brand);}
+.admin-login-box .err{color:#d33;font-size:13px;margin-bottom:10px;min-height:16px;}
+.admin-login-box button{
+  width:100%;
+  background:var(--ink);
+  color:var(--white);
+  padding:14px;
+  border-radius:8px;
+  font-weight:600;
+}
+.admin-close{
+  position:absolute;top:18px;right:18px;
+  font-size:20px;color:var(--grey);
+  cursor:pointer;
+}
+
+.admin-panel{
+  position:fixed;
+  top:0;right:0;
+  width:420px;
+  height:100vh;
+  background:var(--white);
+  z-index:998;
+  transform:translateX(100%);
+  transition:transform 0.35s ease;
+  overflow-y:auto;
+  box-shadow:-10px 0 40px rgba(0,0,0,0.2);
+}
+.admin-panel.active{transform:translateX(0);}
+.admin-header{
+  padding:24px 28px;
+  border-bottom:1px solid #eee;
+  display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;background:var(--white);z-index:2;
+}
+.admin-header h3{font-family:var(--serif);font-size:18px;}
+.admin-tabs{display:flex;border-bottom:1px solid #eee;padding:0 28px;gap:4px;overflow-x:auto;}
+.admin-tab{
+  padding:14px 4px;
+  font-size:13.5px;
+  color:var(--grey);
+  border-bottom:2px solid transparent;
+  white-space:nowrap;
+  margin-right:18px;
+}
+.admin-tab.active{color:var(--ink);border-color:var(--brand);font-weight:600;}
+.admin-body{padding:28px;}
+.admin-section{display:none;}
+.admin-section.active{display:block;}
+.field-group{margin-bottom:18px;}
+.field-group label{display:block;font-size:13px;color:var(--grey);margin-bottom:6px;font-weight:500;}
+.field-group input, .field-group textarea{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:14px;
+  font-family:inherit;
+  outline:none;
+  resize:vertical;
+}
+.field-group input:focus, .field-group textarea:focus{border-color:var(--brand);}
+.save-btn{
+  width:100%;
+  background:var(--brand);
+  color:var(--white);
+  padding:13px;
+  border-radius:8px;
+  font-weight:600;
+  font-size:14px;
+  margin-top:8px;
+}
+.save-toast{
+  margin-top:10px;
+  font-size:13px;
+  color:#2a9d5c;
+  text-align:center;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.save-toast.show{opacity:1;}
+.curr-edit-item, .review-edit-item{
+  border:1px solid #eee;
+  border-radius:10px;
+  padding:16px;
+  margin-bottom:14px;
+}
+.upload-slot{
+  width:100%;
+  aspect-ratio:1;
+  border:2px dashed #ddd;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+  color:var(--grey);
+  cursor:pointer;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  overflow:hidden;
+}
+.port-upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+
+/* ---------- Tablet ---------- */
+@media (max-width:1024px){
+  .wrap{padding:0 24px;}
+  .hero-inner{gap:44px;}
+  .hero h1{font-size:clamp(34px,5.5vw,56px);}
+  .about-grid{gap:48px;}
+  .curr-grid{grid-template-columns:repeat(2,1fr);}
+  .port-grid{grid-template-columns:repeat(3,1fr);}
+  .port-grid .pf:nth-child(1){grid-column:span 2;grid-row:span 2;}
+  .port-grid .pf:nth-child(4){grid-column:span 1;}
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width:880px){
+  .mobile-break{display:block;}
+  nav ul, .nav-cta{display:none;}
+  .mobile-toggle{display:flex;position:relative;z-index:210;}
+  .mobile-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .mobile-toggle.open span:nth-child(2){opacity:0;}
+  .mobile-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  .mobile-toggle span{transition:transform 0.25s, opacity 0.25s;}
+  nav ul.mobile-open{
+    display:flex !important;
+    flex-direction:column;
+    position:fixed;
+    top:68px;right:16px;
+    background:var(--ink);
+    padding:18px;
+    border-radius:14px;
+    gap:6px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.35);
+    border:1px solid rgba(201,155,74,0.18);
+  }
+  nav ul.mobile-open li{width:100%;}
+  nav ul.mobile-open a{display:block;padding:11px 14px;border-radius:8px;}
+  nav ul.mobile-open a:hover{background:rgba(201,155,74,0.1);}
+  nav ul.mobile-open a::after{display:none;}
+
+  .hero{padding-top:104px;min-height:auto;padding-bottom:56px;}
+  .scroll-cue{right:14px;bottom:20px;}
+  .scroll-cue .ln{width:20px;}
+  .hero-inner{grid-template-columns:1fr;gap:40px;}
+  .hero-stats{flex-direction:row;flex-wrap:wrap;border-left:none;border-top:1px solid rgba(255,255,255,0.12);padding-left:0;padding-top:24px;gap:22px 28px;}
+  .hero-types{flex-wrap:wrap;gap:18px;}
+  .hero-cta{flex-wrap:wrap;}
+  .hero-cta a{flex:1;justify-content:center;text-align:center;}
+  .hero-arc{width:520px;height:520px;right:-260px;}
+
+  .about-grid{grid-template-columns:1fr;gap:40px;}
+  .about-card{padding:0 0 32px;}
+  .about-card-body{padding:24px 28px 0;}
+
+  .curr-grid{grid-template-columns:1fr;}
+  .review-track{grid-template-columns:1fr;}
+  .review-card p{min-height:0;}
+
+  .port-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:140px;}
+  .port-grid .pf:nth-child(1){grid-column:span 2;grid-row:span 1;}
+  .port-grid .pf:nth-child(4){grid-column:span 1;}
+
+  .admin-panel{width:100%;}
+  .footer-inner{flex-direction:column;gap:20px;text-align:center;}
+  section{padding:80px 0;}
+  .wrap{padding:0 20px;}
+}
+
+/* ---------- Small mobile ---------- */
+@media (max-width:480px){
+  .wrap{padding:0 18px;}
+  .logo{font-size:16px;}
+  .hero{padding-top:96px;padding-bottom:60px;}
+  .hero-arc{display:none;}
+  .hero-tag{font-size:11px;gap:8px;flex-wrap:wrap;}
+  .hero h1{font-size:clamp(28px,8vw,38px);line-height:1.28;}
+  .hero-desc{font-size:15px;}
+  .hero-types{gap:14px 16px;}
+  .htype .ic{width:36px;height:36px;}
+  .htype span{font-size:13px;}
+  .hero-cta{flex-direction:column;}
+  .btn-primary,.btn-ghost{width:100%;padding:15px 24px;font-size:14.5px;}
+  .hero-stats{gap:18px 22px;}
+  .stat-num{font-size:26px;}
+
+  section{padding:64px 0;}
+  .section-title{font-size:26px;}
+  .section-head{margin-bottom:44px;}
+
+  .about-card{padding:0 0 28px;}
+  .about-card-body{padding:20px 22px 0;}
+  .about-card h3{font-size:25px;}
+  .about-text p:first-of-type{font-size:17px;}
+  .about-text p{font-size:15.5px;}
+  .about-card .tags{gap:6px;}
+  .about-card .tag{font-size:11.5px;padding:6px 11px;}
+  .about-card .social-row a{width:32px;height:32px;}
+  .ic-letter{font-size:13px;}
+  .about-card .social-row svg{width:14px;height:14px;}
+
+  .curr-card{padding:30px 24px;}
+  .review-card{padding:28px 22px;}
+  .review-card p{min-height:0;}
+
+  .port-grid{grid-auto-rows:120px;gap:10px;}
+  .pf-label{font-size:11px;padding:5px 10px;}
+
+  .contact h2{font-size:26px;}
+  .contact-btn{width:100%;justify-content:center;padding:16px 24px;font-size:15px;}
+
+  .footer-inner{justify-content:center;text-align:center;}
+  .social-links{gap:8px;}
+  .social-icon{width:72px;height:66px;gap:6px;}
+  .social-icon svg{width:19px;height:19px;}
+  .ic-letter-lg{font-size:21px;}
+  .social-icon .ic-label{font-size:10px;}
+
+  .admin-tabs{padding:0 16px;}
+  .admin-body{padding:20px;}
+  .port-upload-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Extra small mobile ---------- */
+@media (max-width:360px){
+  .social-icon{width:62px;height:60px;}
+  .social-icon .ic-label{font-size:9px;}
+  .social-icon svg{width:17px;height:17px;}
+  .hero-stats{gap:16px 18px;}
+  .stat-num{font-size:23px;}
+}
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="wrap nav-inner">
+    <a href="#" class="logo"><span class="dash"><span></span><span></span><span></span></span>이시헌 <b>강사</b></a>
+    <nav>
+      <ul>
+        <li><a href="#about">소개</a></li>
+        <li><a href="#curriculum">커리큘럼</a></li>
+        <li><a href="#reviews">수강 후기</a></li>
+        <li><a href="#portfolio">포트폴리오</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <a href="#contact" class="nav-cta">강의 문의</a>
+      <div class="admin-trigger" onclick="openAdminLogin()" title=""></div>
+    </div>
+    <div class="mobile-toggle" id="mobileToggle" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-arc"></div>
+  <div class="hero-grid"></div>
+  <div class="wrap hero-inner">
+    <div>
+      <div class="hero-tag"><span class="marks"><span></span><span></span><span></span><span></span></span>생성형 AI교육강사 이시헌 강사</div>
+      <h1 id="heroTitle">AI는 선택이 아닌<br><em>필수</em>인 시대</h1>
+      <p class="hero-desc" id="heroDesc">실무 중심의 생성형 AI 교육으로 AI 변화에 앞서가는 경쟁력을 만듭니다.</p>
+      <div class="hero-types">
+        <div class="htype">
+          <span class="ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C99B4A" stroke-width="1.6"><circle cx="8" cy="7" r="2.6"/><path d="M3.5 19c0-3 2-5 4.5-5s4.5 2 4.5 5"/><circle cx="17" cy="8.5" r="2"/><path d="M14.5 19c0-2.4 1.4-4.2 3.3-4.6"/></svg>
+          </span>
+          <span>기업강연</span>
+        </div>
+        <div class="htype">
+          <span class="ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C99B4A" stroke-width="1.6"><path d="M4 10l8-5 8 5"/><path d="M5 10v8M9 10v8M15 10v8M19 10v8"/><path d="M3 20h18"/><path d="M3 10h18"/></svg>
+          </span>
+          <span>공공기관</span>
+        </div>
+        <div class="htype">
+          <span class="ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C99B4A" stroke-width="1.6"><path d="M12 3l9 4.5-9 4.5-9-4.5 9-4.5z"/><path d="M6 9.7V15c0 1.5 2.7 3 6 3s6-1.5 6-3V9.7"/><path d="M21 8v5.5"/></svg>
+          </span>
+          <span>대학강연</span>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <a href="#curriculum" class="btn-primary">커리큘럼 보기 →</a>
+        <a href="#contact" class="btn-ghost">강의 문의하기</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num" id="statLectures">150<span>+</span></div>
+        <div class="stat-label">강의 완료</div>
+      </div>
+      <div>
+        <div class="stat-num" id="statStudents">1,000<span>+</span></div>
+        <div class="stat-label">누적 수강생</div>
+      </div>
+      <div>
+        <div class="stat-num" id="statSatisfaction">99<span>%</span></div>
+        <div class="stat-label">만족도</div>
+      </div>
+      <div>
+        <div class="stat-num" id="statYears">2<span>년</span></div>
+        <div class="stat-label">AI 강의 경력</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue" id="scrollCue"><div class="ln"></div>SCROLL</div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-card">
+      <div class="avatar-mono" id="instructorInitial">이시</div>
+      <div class="about-card-body">
+        <div class="role">AI 교육 전문가</div>
+        <h3 id="instructorName">이시헌</h3>
+        <div class="social-row">
+          <a href="#" id="cardLinkInstagram" target="_blank" title="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a href="#" id="cardLinkYoutube" target="_blank" title="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.6"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.2v5.6l5-2.8z" fill="#E0B978" stroke="none"/></svg>
+          </a>
+          <a href="#" id="cardLinkBlog" target="_blank" title="Blog">
+            <span class="ic-letter">B</span>
+          </a>
+        </div>
+        <div class="tags">
+          <span class="tag">ChatGPT 활용</span>
+          <span class="tag">생성형 AI</span>
+          <span class="tag">프롬프트 엔지니어링</span>
+          <span class="tag">AI 비즈니스 전략</span>
+          <span class="tag">LLM 응용</span>
+          <span class="tag">업무 자동화</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-text">
+      <div class="eyebrow">About</div>
+      <h2 class="section-title" style="margin-bottom:28px;">강사 소개</h2>
+      <p id="aboutText1">조직과 개인이 실제 성과로 이어질 수 있는 "실행 중심 AI 교육"을 제공합니다.</p>
+      <div class="about-divider"></div>
+      <p id="aboutText2">빠르게 변화하는 시대, 기업이 경쟁력을 갖추기 위해서는 구성원 각자가 스스로 배우고 적용할 수 있는 힘이 중요합니다. 실행력, 지속성을 기반으로 AI를 업무에 연결하는 실질적인 교육을 설계합니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="curriculum" id="curriculum">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Curriculum</div>
+      <h2 class="section-title">강의 프로그램</h2>
+      <p>입문부터 리더십 레벨까지,<br class="mobile-break">조직의 단계에 맞춘 6가지 트랙입니다.</p>
+    </div>
+    <div class="curr-grid" id="currGrid">
+      <!-- JS renders curriculum cards -->
+    </div>
+  </div>
+</section>
+
+<section class="reviews" id="reviews">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Reviews</div>
+      <h2 class="section-title">수강 후기</h2>
+      <p>현장에서 함께한 수강생분들의 이야기입니다.</p>
+    </div>
+    <div class="review-track" id="reviewTrack">
+      <!-- JS renders review cards -->
+    </div>
+  </div>
+</section>
+
+<section class="portfolio" id="portfolio">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Portfolio</div>
+      <h2 class="section-title">강의 현장</h2>
+      <p>대학교 워크숍부터 기업 워크숍까지, 다양한 현장의 기록입니다.</p>
+    </div>
+    <div class="port-grid" id="portGrid">
+      <div class="pf" data-slot="0"><span class="pf-label">대학교 워크숍</span></div>
+      <div class="pf" data-slot="1"><span class="pf-label">대학교 워크숍</span></div>
+      <div class="pf" data-slot="2"><span class="pf-label">대학교 워크숍</span></div>
+      <div class="pf" data-slot="3"><span class="pf-label">기업 워크숍</span></div>
+      <div class="pf" data-slot="4"><span class="pf-label">기업 워크숍</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="eyebrow">Contact</div>
+    <h2>학습 목표에 맞는<br class="mobile-break"> 커리큘럼 구성과<br>일정 협의까지<br class="mobile-break"> <span class="accent">편하게 연락을 주세요</span></h2>
+    <p class="contact-sub" id="contactEmail">문의 메일: and18090@naver.com</p>
+    <a href="https://open.kakao.com/o/smrQqdch" target="_blank" class="contact-btn" id="contactBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#2A1F18"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.9 1.92 5.45 4.78 6.9-.16.56-.97 3.36-1 3.58 0 0-.02.17.09.24.11.07.24.02.24.02.32-.04 3.7-2.43 4.28-2.84.52.07 1.06.1 1.61.1 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
+      카카오톡 문의하기
+    </a>
+    
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <a href="#" class="logo"><span class="dash"><span></span><span></span><span></span></span>이시헌 <b>강사</b></a>
+    <div class="social-links">
+      <a href="#" id="linkInstagram" class="social-icon" title="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        <span class="ic-label">Instagram</span>
+      </a>
+      <a href="#" id="linkYoutube" class="social-icon" title="YouTube">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E0B978" stroke-width="1.8"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.5 9.2v5.6l5-2.8z" fill="#E0B978" stroke="none"/></svg>
+        <span class="ic-label">YouTube</span>
+      </a>
+      <a href="#" id="linkBlog" class="social-icon" title="Blog">
+        <span class="ic-letter ic-letter-lg">B</span>
+        <span class="ic-label">Blog</span>
+      </a>
+    </div>
+    <div class="footer-copy">© 2026 이시헌 강사.</div>
+  </div>
+</footer>
+
+<!-- ===== Admin Login ===== -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-login-box">
+    <span class="admin-close" onclick="closeAdminLogin()">✕</span>
+    <h3>페이지 관리자</h3>
+    <input type="password" id="adminPassword" placeholder="비밀번호를 입력하세요" onkeydown="if(event.key==='Enter')checkAdminPassword()">
+    <div class="err" id="adminErr"></div>
+    <button onclick="checkAdminPassword()">확인</button>
+  </div>
+</div>
+
+<!-- ===== Admin Panel ===== -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <h3>관리자 모드</h3>
+    <span class="admin-close" onclick="closeAdminPanel()">✕</span>
+  </div>
+  <div class="admin-tabs">
+    <div class="admin-tab active" onclick="switchAdminTab('basic')">기본 정보</div>
+    <div class="admin-tab" onclick="switchAdminTab('curr')">커리큘럼</div>
+    <div class="admin-tab" onclick="switchAdminTab('review')">후기</div>
+    <div class="admin-tab" onclick="switchAdminTab('sns')">SNS</div>
+    <div class="admin-tab" onclick="switchAdminTab('image')">이미지</div>
+  </div>
+  <div class="admin-body">
+
+    <div class="admin-section active" id="adminBasic">
+      <div class="field-group"><label>강사명</label><input id="in_instructorName"></div>
+      <div class="field-group"><label>직함 태그</label><input id="in_role"></div>
+      <div class="field-group"><label>소개글 1</label><textarea rows="3" id="in_aboutText1"></textarea></div>
+      <div class="field-group"><label>소개글 2</label><textarea rows="3" id="in_aboutText2"></textarea></div>
+      <div class="field-group"><label>히어로 통계 — 강의 완료</label><input id="in_statLectures"></div>
+      <div class="field-group"><label>누적 수강생</label><input id="in_statStudents"></div>
+      <div class="field-group"><label>만족도</label><input id="in_statSatisfaction"></div>
+      <div class="field-group"><label>AI 강의 경력</label><input id="in_statYears"></div>
+      <div class="field-group"><label>이메일</label><input id="in_email"></div>
+      <div class="field-group"><label>히어로 설명문</label><textarea rows="3" id="in_heroDesc"></textarea></div>
+      <button class="save-btn" onclick="saveBasic()">변경사항 저장</button>
+      <div class="save-toast" id="toastBasic">✓ 저장되었습니다</div>
+    </div>
+
+    <div class="admin-section" id="adminCurr">
+      <div id="currEditList"></div>
+      <button class="save-btn" onclick="saveCurriculum()">커리큘럼 저장</button>
+      <div class="save-toast" id="toastCurr">✓ 저장되었습니다</div>
+    </div>
+
+    <div class="admin-section" id="adminReview">
+      <div id="reviewEditList"></div>
+      <button class="save-btn" onclick="saveReviews()">후기 저장</button>
+      <div class="save-toast" id="toastReview">✓ 저장되었습니다</div>
+    </div>
+
+    <div class="admin-section" id="adminSns">
+      <div class="field-group"><label>YouTube URL</label><input id="in_youtube"></div>
+      <div class="field-group"><label>Instagram URL</label><input id="in_instagram"></div>
+      <div class="field-group"><label>Blog URL</label><input id="in_blog"></div>
+      <button class="save-btn" onclick="saveSns()">SNS 링크 저장</button>
+      <div class="save-toast" id="toastSns">✓ 저장되었습니다</div>
+    </div>
+
+    <div class="admin-section" id="adminImage">
+      <div class="field-group">
+        <label>프로필 사진</label>
+        <div class="upload-slot" id="profileUploadSlot" onclick="document.getElementById('profileFileInput').click()">클릭하거나 사진을 드래그하세요<br>JPG, PNG, WEBP · 최대 10MB</div>
+        <input type="file" id="profileFileInput" accept="image/*" style="display:none" onchange="handleProfileUpload(event)">
+      </div>
+      <div class="field-group">
+        <label>포트폴리오 이미지 (최대 5장 · 업로드 즉시 반영)</label>
+        <div class="port-upload-grid" id="portUploadGrid"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ============ Firebase ============ */
+const firebaseConfig = {
+  projectId: "project-7291588186084016733",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const DOC_REF = db.collection("site").doc("aisuho");
+
+const ADMIN_PASSWORD = "a5800a";
+
+let siteData = {
+  instructorName:"이시헌",
+  role:"AI 교육 전문가",
+  aboutText1:"조직과 개인이 실제 성과로 이어질 수 있는 \"실행 중심 AI 교육\"을 제공합니다.",
+  aboutText2:"빠르게 변화하는 시대, 기업이 경쟁력을 갖추기 위해서는 구성원 각자가 스스로 배우고 적용할 수 있는 힘이 중요합니다. 실행력, 지속성을 기반으로 AI를 업무에 연결하는 실질적인 교육을 설계합니다.",
+  statLectures:"150+",
+  statStudents:"1,000+",
+  statSatisfaction:"99%",
+  statYears:"2년",
+  email:"and18090@naver.com",
+  heroDesc:"실무 중심의 생성형 AI 교육으로 AI 변화에 앞서가는 경쟁력을 만듭니다.",
+  youtube:"https://youtube.com/channel/UCtfWthY8hrVheXwqwIOcwbw?si=LrxatqYlk25lmLSd",
+  instagram:"https://www.instagram.com/life88writer/",
+  blog:"https://blog.naver.com/inshownam",
+  profileImage:"",
+  portfolioImages:["","","","",""],
+  curriculum:[
+    {num:"01", title:"AI 리터러시 기초", desc:"AI를 처음 접하는 임직원을 위한 입문 과정. ChatGPT 실습과 생성형 AI의 핵심 개념을 익힙니다.", meta:"2시간 · 입문"},
+    {num:"02", title:"프롬프트 엔지니어링", desc:"업무 효율을 극대화하는 프롬프트 설계 기법. 부서별 맞춤 실습 예제로 즉시 현업 적용이 가능합니다.", meta:"3시간 · 중급"},
+    {num:"03", title:"AI 업무 자동화", desc:"반복 업무를 AI로 자동화하는 실전 과정. 노코드 툴부터 API 연동까지 단계별로 학습합니다.", meta:"3시간 · 중급"},
+    {num:"04", title:"AI 비즈니스 전략", desc:"경영진 및 팀장급 대상 AI 도입 전략 수립. 조직 내 AI 로드맵 설계부터 리스크 관리까지 다룹니다.", meta:"4시간 · 리더십"},
+    {num:"05", title:"생성형 AI 심화", desc:"Midjourney, Sora, Claude 등 최신 생성형 AI 툴 활용법과 콘텐츠 제작 파이프라인 구축을 다룹니다.", meta:"4시간 · 심화"},
+    {num:"06", title:"맞춤형 특강", desc:"기업의 업종과 니즈에 맞게 커스터마이징된 1일 집중 교육. 사전 인터뷰를 통해 최적 설계합니다.", meta:"협의 · 커스텀"}
+  ],
+  reviews:[
+    {stars:5, text:"현장에서 바로 쓸 수 있는 내용으로 가득 찼습니다. 이론보다 실습 중심의 구성이 우리 팀에 딱 맞았어요.", name:"이*준", org:"수강생"},
+    {stars:5, text:"알기쉽게 차근차근 설명해주시고, 실습해볼수 있어서 너무 좋았습니다. 선생님이 알려주신 프롬프트로 고퀄리티의 결과물이 나올때마다 신기했어요! 더 많이 알려주고싶으신 열정에 감동했어요.", name:"박*연", org:"수강생"},
+    {stars:5, text:"굉장히 유익한 시간이였습니다, 짧은 시간동안 엄청 많은 양의 정보를 알수 있어서 알찬 시간이였고 질의답도 되게 자세하게 마지막까지 알려주셔서 좋았어요.", name:"김*수", org:"수강생"}
+  ]
+};
+
+/* ============ Render ============ */
+function renderAll(){
+  document.getElementById('instructorName').textContent = siteData.instructorName;
+  document.getElementById('instructorInitial').textContent = (siteData.instructorName||'').slice(0,2);
+  document.getElementById('aboutText1').innerHTML = textWithBreaks(siteData.aboutText1);
+  document.getElementById('aboutText2').innerHTML = textWithBreaks(siteData.aboutText2);
+  document.getElementById('statLectures').innerHTML = formatStat(siteData.statLectures);
+  document.getElementById('statStudents').innerHTML = formatStat(siteData.statStudents);
+  document.getElementById('statSatisfaction').innerHTML = formatStat(siteData.statSatisfaction);
+  document.getElementById('statYears').innerHTML = formatStat(siteData.statYears);
+  document.getElementById('heroDesc').innerHTML = textWithBreaks(siteData.heroDesc);
+  document.getElementById('contactEmail').textContent = siteData.email ? `문의 메일: ${siteData.email}` : '강의 문의 메일을 보내드립니다';
+  document.getElementById('linkYoutube').href = siteData.youtube || '#';
+  document.getElementById('linkInstagram').href = siteData.instagram || '#';
+  document.getElementById('linkBlog').href = siteData.blog || '#';
+  document.getElementById('cardLinkYoutube').href = siteData.youtube || '#';
+  document.getElementById('cardLinkInstagram').href = siteData.instagram || '#';
+  document.getElementById('cardLinkBlog').href = siteData.blog || '#';
+
+  if(siteData.profileImage){
+    document.getElementById('profileUploadSlot').style.backgroundImage = `url(${siteData.profileImage})`;
+    document.getElementById('profileUploadSlot').textContent = '';
+    document.getElementById('instructorInitial').style.backgroundImage = `url(${siteData.profileImage})`;
+    document.getElementById('instructorInitial').textContent = '';
+  }
+
+  // Curriculum
+  const currGrid = document.getElementById('currGrid');
+  currGrid.innerHTML = siteData.curriculum.map(c => `
+    <div class="curr-card">
+      <div class="curr-num">${c.num}</div>
+      <h4>${escapeHtml(c.title)}</h4>
+      <p>${textWithBreaks(c.desc)}</p>
+      <div class="curr-meta"><span>${escapeHtml(c.meta)}</span></div>
+    </div>
+  `).join('');
+
+  // Reviews
+  const reviewTrack = document.getElementById('reviewTrack');
+  reviewTrack.innerHTML = siteData.reviews.map(r => `
+    <div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      <p>${textWithBreaks(r.text)}</p>
+      <div class="review-who">
+        <div class="review-avatar">${escapeHtml((r.name||'').slice(0,1))}</div>
+        <div>
+          <div class="review-name">${escapeHtml(r.name)}</div>
+          <div class="review-org">${escapeHtml(r.org)}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Portfolio images
+  document.querySelectorAll('.pf').forEach((pf, i) => {
+    const img = siteData.portfolioImages[i];
+    if(img){
+      let existing = pf.querySelector('img');
+      if(!existing){
+        existing = document.createElement('img');
+        pf.insertBefore(existing, pf.firstChild);
+      }
+      existing.src = img;
+    }
+  });
+
+  renderAdminFields();
+  renderPortUploadGrid();
+}
+
+function formatStat(val){
+  if(!val) return '';
+  const m = String(val).match(/^([\d,]+)(.*)$/);
+  if(m) return `${m[1]}<span>${m[2]}</span>`;
+  return val;
+}
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+/* Escapes everything first (safe), then turns <br> typed by admin
+   or real newlines into actual line breaks. No other tag can get through. */
+function textWithBreaks(str){
+  if(!str) return '';
+  const escaped = escapeHtml(str);
+  return escaped
+    .replace(/\n/g, '<br>')
+    .replace(/&lt;\s*\/?\s*br\s*\/?\s*&gt;/gi, '<br>');
+}
+
+/* ============ Firestore Load/Save ============ */
+function loadSite(){
+  DOC_REF.get().then(doc => {
+    if(doc.exists){
+      const d = doc.data();
+      siteData = Object.assign({}, siteData, d);
+    }
+    renderAll();
+  }).catch(err => {
+    console.error("Firestore load error:", err);
+    renderAll();
+  });
+}
+
+function saveToFirestore(partial, toastId){
+  DOC_REF.set(partial, {merge:true}).then(() => {
+    if(toastId){
+      const t = document.getElementById(toastId);
+      t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'), 2000);
+    }
+  }).catch(err => {
+    console.error("Firestore save error:", err);
+    alert("저장 중 오류가 발생했습니다.");
+  });
+}
+
+/* ============ Admin: Auth ============ */
+function openAdminLogin(){
+  document.getElementById('adminOverlay').classList.add('active');
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('adminErr').textContent = '';
+}
+function closeAdminLogin(){
+  document.getElementById('adminOverlay').classList.remove('active');
+}
+function checkAdminPassword(){
+  const val = document.getElementById('adminPassword').value;
+  if(val === ADMIN_PASSWORD){
+    closeAdminLogin();
+    openAdminPanel();
+  } else {
+    document.getElementById('adminErr').textContent = '비밀번호가 올바르지 않습니다.';
+  }
+}
+function openAdminPanel(){
+  document.getElementById('adminPanel').classList.add('active');
+}
+function closeAdminPanel(){
+  document.getElementById('adminPanel').classList.remove('active');
+}
+function switchAdminTab(tab){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  const map = {basic:'adminBasic', curr:'adminCurr', review:'adminReview', sns:'adminSns', image:'adminImage'};
+  document.getElementById(map[tab]).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ============ Admin: Render Fields ============ */
+function renderAdminFields(){
+  document.getElementById('in_instructorName').value = siteData.instructorName || '';
+  document.getElementById('in_role').value = siteData.role || '';
+  document.getElementById('in_aboutText1').value = siteData.aboutText1 || '';
+  document.getElementById('in_aboutText2').value = siteData.aboutText2 || '';
+  document.getElementById('in_statLectures').value = siteData.statLectures || '';
+  document.getElementById('in_statStudents').value = siteData.statStudents || '';
+  document.getElementById('in_statSatisfaction').value = siteData.statSatisfaction || '';
+  document.getElementById('in_statYears').value = siteData.statYears || '';
+  document.getElementById('in_email').value = siteData.email || '';
+  document.getElementById('in_heroDesc').value = siteData.heroDesc || '';
+  document.getElementById('in_youtube').value = siteData.youtube || '';
+  document.getElementById('in_instagram').value = siteData.instagram || '';
+  document.getElementById('in_blog').value = siteData.blog || '';
+
+  // curriculum edit list
+  const currList = document.getElementById('currEditList');
+  currList.innerHTML = siteData.curriculum.map((c,i) => `
+    <div class="curr-edit-item">
+      <div class="field-group"><label>제목</label><input data-idx="${i}" class="curr-title" value="${escapeAttr(c.title)}"></div>
+      <div class="field-group"><label>설명</label><textarea rows="2" data-idx="${i}" class="curr-desc">${escapeHtml(c.desc)}</textarea></div>
+      <div class="field-group"><label>시간 · 레벨</label><input data-idx="${i}" class="curr-meta-input" value="${escapeAttr(c.meta)}"></div>
+    </div>
+  `).join('');
+
+  // review edit list
+  const reviewList = document.getElementById('reviewEditList');
+  reviewList.innerHTML = siteData.reviews.map((r,i) => `
+    <div class="review-edit-item">
+      <div class="field-group"><label>후기 내용</label><textarea rows="2" data-idx="${i}" class="review-text">${escapeHtml(r.text)}</textarea></div>
+      <div class="field-group"><label>이름</label><input data-idx="${i}" class="review-name-input" value="${escapeAttr(r.name)}"></div>
+      <div class="field-group"><label>구분</label><input data-idx="${i}" class="review-org-input" value="${escapeAttr(r.org)}"></div>
+    </div>
+  `).join('');
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+/* ============ Admin: Save Actions ============ */
+function saveBasic(){
+  siteData.instructorName = document.getElementById('in_instructorName').value;
+  siteData.role = document.getElementById('in_role').value;
+  siteData.aboutText1 = document.getElementById('in_aboutText1').value;
+  siteData.aboutText2 = document.getElementById('in_aboutText2').value;
+  siteData.statLectures = document.getElementById('in_statLectures').value;
+  siteData.statStudents = document.getElementById('in_statStudents').value;
+  siteData.statSatisfaction = document.getElementById('in_statSatisfaction').value;
+  siteData.statYears = document.getElementById('in_statYears').value;
+  siteData.email = document.getElementById('in_email').value;
+  siteData.heroDesc = document.getElementById('in_heroDesc').value;
+  renderAll();
+  saveToFirestore({
+    instructorName: siteData.instructorName, role: siteData.role,
+    aboutText1: siteData.aboutText1, aboutText2: siteData.aboutText2,
+    statLectures: siteData.statLectures, statStudents: siteData.statStudents,
+    statSatisfaction: siteData.statSatisfaction, statYears: siteData.statYears,
+    email: siteData.email, heroDesc: siteData.heroDesc
+  }, 'toastBasic');
+}
+
+function saveCurriculum(){
+  document.querySelectorAll('.curr-title').forEach(el => siteData.curriculum[el.dataset.idx].title = el.value);
+  document.querySelectorAll('.curr-desc').forEach(el => siteData.curriculum[el.dataset.idx].desc = el.value);
+  document.querySelectorAll('.curr-meta-input').forEach(el => siteData.curriculum[el.dataset.idx].meta = el.value);
+  renderAll();
+  saveToFirestore({curriculum: siteData.curriculum}, 'toastCurr');
+}
+
+function saveReviews(){
+  document.querySelectorAll('.review-text').forEach(el => siteData.reviews[el.dataset.idx].text = el.value);
+  document.querySelectorAll('.review-name-input').forEach(el => siteData.reviews[el.dataset.idx].name = el.value);
+  document.querySelectorAll('.review-org-input').forEach(el => siteData.reviews[el.dataset.idx].org = el.value);
+  renderAll();
+  saveToFirestore({reviews: siteData.reviews}, 'toastReview');
+}
+
+function saveSns(){
+  siteData.youtube = document.getElementById('in_youtube').value;
+  siteData.instagram = document.getElementById('in_instagram').value;
+  siteData.blog = document.getElementById('in_blog').value;
+  renderAll();
+  saveToFirestore({youtube: siteData.youtube, instagram: siteData.instagram, blog: siteData.blog}, 'toastSns');
+}
+
+/* ============ Image Upload (Canvas compression -> Base64) ============ */
+function compressImage(file, maxDim, quality, callback){
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      let w = img.width, h = img.height;
+      if(w > h){ if(w > maxDim){ h = h*(maxDim/w); w = maxDim; } }
+      else { if(h > maxDim){ w = w*(maxDim/h); h = maxDim; } }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleProfileUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 10*1024*1024){ alert('파일 크기는 10MB 이하여야 합니다.'); return; }
+  compressImage(file, 800, 0.85, (dataUrl) => {
+    siteData.profileImage = dataUrl;
+    renderAll();
+    saveToFirestore({profileImage: dataUrl}, null);
+  });
+}
+
+function renderPortUploadGrid(){
+  const grid = document.getElementById('portUploadGrid');
+  grid.innerHTML = '';
+  for(let i=0;i<5;i++){
+    const slot = document.createElement('div');
+    slot.className = 'upload-slot';
+    if(siteData.portfolioImages[i]){
+      slot.style.backgroundImage = `url(${siteData.portfolioImages[i]})`;
+    } else {
+      slot.textContent = `슬롯 ${i+1}`;
+    }
+    slot.onclick = () => triggerPortUpload(i);
+    grid.appendChild(slot);
+  }
+}
+function triggerPortUpload(idx){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 10*1024*1024){ alert('파일 크기는 10MB 이하여야 합니다.'); return; }
+    compressImage(file, 1000, 0.8, (dataUrl) => {
+      siteData.portfolioImages[idx] = dataUrl;
+      renderAll();
+      saveToFirestore({portfolioImages: siteData.portfolioImages}, null);
+    });
+  };
+  input.click();
+}
+
+/* ============ Mobile nav ============ */
+function toggleMobileNav(){
+  const navUl = document.querySelector('nav ul');
+  const toggle = document.getElementById('mobileToggle');
+  navUl.classList.toggle('mobile-open');
+  toggle.classList.toggle('open');
+}
+document.querySelectorAll('nav ul a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelector('nav ul').classList.remove('mobile-open');
+    document.getElementById('mobileToggle').classList.remove('open');
+  });
+});
+
+/* ============ Header scroll effect ============ */
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('siteHeader');
+  if(window.scrollY > 40) header.classList.add('scrolled');
+  else header.classList.remove('scrolled');
+
+  const cue = document.getElementById('scrollCue');
+  if(window.scrollY > window.innerHeight * 0.5) cue.classList.remove('visible');
+  else cue.classList.add('visible');
+});
+
+/* ============ Basic copy/inspect deterrents ============ */
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  const k = e.key.toUpperCase();
+  if(k === 'F12') e.preventDefault();
+  if(e.ctrlKey && e.shiftKey && (k === 'I' || k === 'J' || k === 'C')) e.preventDefault();
+  if(e.ctrlKey && (k === 'U' || k === 'S')) e.preventDefault();
+});
+document.addEventListener('dragstart', e => e.preventDefault());
+
+/* ============ Init ============ */
+loadSite();
+setTimeout(() => document.getElementById('scrollCue').classList.add('visible'), 400);
+</script>
+
+</body>
+</html>
