@@ -1153,7 +1153,16 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const DOC_REF = db.collection("site").doc("aisuho");
 
-const ADMIN_PASSWORD = "a5800a";
+/* 관리자 비밀번호는 평문으로 저장하지 않고 SHA-256 해시로만 보관합니다.
+   소스 코드를 열어봐도 실제 비밀번호 문자열은 보이지 않습니다.
+   (단, 이 방식은 캐주얼한 소스 보기를 막는 수준이며,
+    브라우저 콘솔에서 직접 함수를 호출하는 경우까지는 막지 못합니다.） */
+const ADMIN_HASH = "7433b68a70308ce6b339c50141aff418e161f070ebe55343320b770a59a54de8";
+
+async function hashText(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 let siteData = {
   instructorName:"이시헌",
@@ -1312,9 +1321,10 @@ function openAdminLogin(){
 function closeAdminLogin(){
   document.getElementById('adminOverlay').classList.remove('active');
 }
-function checkAdminPassword(){
+async function checkAdminPassword(){
   const val = document.getElementById('adminPassword').value;
-  if(val === ADMIN_PASSWORD){
+  const hashed = await hashText(val);
+  if(hashed === ADMIN_HASH){
     closeAdminLogin();
     openAdminPanel();
   } else {
