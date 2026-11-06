@@ -1,0 +1,1 @@
+{"name":"creator-class-checkout","version":"1.0.0","private":true,"description":"Creator Class landing page and Toss Payments checkout","scripts":{"start":"node server.js"},"engines":{"node":">=18"}}
